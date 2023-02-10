@@ -32,26 +32,19 @@ export const options = {
 export const data = {
   datasets: [
     {
-      label: 'Red dataset',
-      data: [
-        {
-          x: 10,
-          y: 20,
-          r: 10,
-        }
-      ],
+      label: 'Participant 5',
+      data: UbisenseDataParserService.participant5,
       backgroundColor: 'rgba(255, 99, 132, 0.5)',
     },
     {
-      label: 'Blue dataset',
-      data: [
-        {
-          x: 50,
-          y: 50,
-          r: 10,
-        }
-      ],
+      label: 'Participant 4',
+      data: UbisenseDataParserService.participant4,
       backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    },
+    {
+      label: 'Robot 1 ',
+      data: UbisenseDataParserService.robot1,
+      backgroundColor: 'rgba(50, 245, 111, 0.5)',
     },
   ],
 };
