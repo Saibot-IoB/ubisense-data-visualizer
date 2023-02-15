@@ -60,9 +60,14 @@ function App() {
   }, []);
 
   return (
-    <div id='chart-container'>
-      <Bubble options={options} data={data} />;
-    </div>
+    <>
+      <div id='chart-container'>
+        <Bubble options={options} data={data} />
+      </div>
+      <div>
+        SÅ gå da hjem
+      </div>
+    </>
   )
 }
 
