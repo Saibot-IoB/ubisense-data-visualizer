@@ -83,7 +83,6 @@ function App() {
           mt="xl"
           defaultValue={range}
           onChangeEnd={e => setrange(e)}
-          thumbChildren={[12, 22]}
         />
       </div>
       <div className='timeLabel-container'>
