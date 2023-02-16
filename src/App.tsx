@@ -9,9 +9,11 @@ import {
 } from 'chart.js';
 import { Bubble } from 'react-chartjs-2';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DatasetType, UbisenseDataParserService } from './services/UbisenseDataParserService';
 import { RangeSlider } from '@mantine/core';
+
+import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 
@@ -46,6 +48,7 @@ function App() {
   const [data, setdata] = useState<DatasetType>([]);
   const [range, setrange] = useState<[number, number]>([0, 300]);
   const [duration, setDuration] = useState<{ start: number, end: number }>({ start: 0, end: 0 });
+  const intervalInputElement = useRef<HTMLInputElement>(null);
 
   const formatSecondsToTimeString = (seconds: number) => {
     const date = new Date(0);
@@ -69,6 +72,35 @@ function App() {
     setdata(UbisenseDataParserService.GetBubbleChartDatasets(range[0], range[1]));
   }, [range]);
 
+  const handleDecrementInterval = () => {
+    if ((range[0] - parseInt(intervalInputElement.current!.value)) >= 0 ) {
+      setrange([
+        range[0] -= parseInt(intervalInputElement.current!.value),
+        range[1] -= parseInt(intervalInputElement.current!.value)
+      ]);
+    } else {
+      setrange([
+        range[0] = 0,
+        range[1]
+      ]);
+    }
+  }
+
+  const handleIncrementInterval = () => {
+    if ((range[0] + parseInt(intervalInputElement.current!.value)) <= duration.end ) {
+      setrange([
+        range[0] += parseInt(intervalInputElement.current!.value),
+        range[1] += parseInt(intervalInputElement.current!.value)
+      ]);
+    } else {
+      setrange([
+        range[0],
+        range[1] = duration.end
+      ]);
+      
+    }
+  }
+
   return (
     <div className='outer-wrapper'>
       <div id='chart-container'>
@@ -83,11 +115,17 @@ function App() {
           mt="xl"
           defaultValue={range}
           onChangeEnd={e => setrange(e)}
+          value={range}
         />
       </div>
       <div className='timeLabel-container'>
         <p>{formatSecondsToTimeString(duration.start)}</p>
         <p>{formatSecondsToTimeString(duration.end)}</p>
+      </div>
+      <div id='intervalButtons-container'>
+        <FaChevronCircleLeft size={30} onClick={handleDecrementInterval} />
+        <input type="number" defaultValue={5} ref={intervalInputElement} />
+        <FaChevronCircleRight size={30} onClick={handleIncrementInterval} />
       </div>
     </div>
   )

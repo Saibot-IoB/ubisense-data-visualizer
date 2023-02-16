@@ -30,3 +30,31 @@
   justify-content: space-between;
   padding: 5px 50px;
 }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+#intervalButtons-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 200px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#intervalButtons-container input {
+  width: 40px;
+  text-align: center;
+  font-size: 18px;
+}
