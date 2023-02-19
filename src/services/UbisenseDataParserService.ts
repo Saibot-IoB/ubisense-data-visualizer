@@ -1,4 +1,4 @@
-type ExtractedDataType = {
+export type ExtractedDataType = {
   time: string,
   tag: string,
   x: string,
@@ -29,16 +29,19 @@ export class UbisenseDataParserService {
     const lines: string[] = data.split('\n');
     lines.shift();
 
-
     lines.forEach((line: string) => {
       line = line.replace(/\0/g, '');
       const time: string = line.substring(7, 15);
       const tag: string = line.substring(21, 44);
       const valid: string = line.substring(53, 55);
+      const variance: string = line.substring(90, 94);
       const x: string = line.substring(63, 68).trim();
       const y: string = line.substring(71, 76).trim();
 
+
+
       if (valid == "ok") {
+        // if (parseFloat(variance) <= 4) {
         if (this.dataCache.has(tag)) {
           this.dataCache.get(tag)?.push({ time, tag, x, y })
         } else {
@@ -46,6 +49,10 @@ export class UbisenseDataParserService {
         }
       }
     })
+  }
+
+  public static GetParsedData() {
+    return this.dataCache;
   }
 
   public static GetExperimentDuration(): { start: number, end: number } {
