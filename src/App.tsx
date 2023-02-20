@@ -54,13 +54,14 @@ function App() {
   const formatSecondsToTimeString = (seconds: number) => {
     const date = new Date(0);
     date.setSeconds(seconds);
+    console.log(seconds);
     return date.toISOString().substring(11, 19);
   }
 
   useEffect(() => {
     const start = async () => {
       const ubiData = await fetch('/experiment1.txt');
-      UbisenseDataParserService.parseData(await ubiData.text());
+      UbisenseDataParserService.parseData(await ubiData.text(), true);
 
       setdata(UbisenseDataParserService.GetBubbleChartDatasets(range[0], range[1]));
       setDuration(UbisenseDataParserService.GetExperimentDuration())
@@ -72,9 +73,10 @@ function App() {
   useEffect(() => {
     const analyzer = new UbisenseDataAnalyzerService();
 
-    console.log(analyzer.LargestGapInData())
-    console.log(analyzer.SmallestGapInData())
-    console.log(analyzer.AverageGapInData())
+    console.log(analyzer.LargestGapInData());
+    console.log(analyzer.SmallestGapInData());
+    console.log(analyzer.AverageGapInData());
+    console.log(analyzer.countDataByInterval(120, UbisenseDataParserService.GetParsedData()));
   }, [data])
 
 
