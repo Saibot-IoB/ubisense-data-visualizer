@@ -1,5 +1,7 @@
-import { time } from "console";
 import { ExtractedDataType, UbisenseDataParserService } from "./UbisenseDataParserService";
+import { TimeFormatter } from "../util/Formatters/TimeFormatter";
+import { TimeConverter } from "../util/Converters/TimeConverter";
+import { ComparisonFunction } from "../Types/Unions";
 
 export type TagTimeGap = {
   tagId: string,
@@ -16,104 +18,87 @@ export type TagTimeGapInterval = {
 }
 
 export class UbisenseDataAnalyzerService {
-  private readonly dataCache: Map<string, ExtractedDataType[]>;
-
-  constructor() {
-    this.dataCache = UbisenseDataParserService.GetParsedData();
-  }
-
-  public LargestGapInData(): TagTimeGap[] {
-    const toReturn: TagTimeGap[] = [];
-
-    // For hver key
-    this.dataCache.forEach((value, key) => {
-      let currentLargetsGap: number = 0;
-
-      // Tjek alle values til den key
+  /**
+   * Finds the most extreme data gap for each tag in the dataset.
+   * The gap to be found is determined by the provided ComparisonFunction.
+   * @param {ComparisonFunction} compareFunction The function that determines
+   * if the smallest or the larget gap should be found.
+   * @returns {TagTimeGap[]}
+   */
+  public GetExtremeGapInData(compareFunction: ComparisonFunction, threshold?: number): TagTimeGap[] {
+    return this.processTimeGapData((key, value) => {
+      let currentGap: number = (compareFunction.type === "isGreater") ? 0 : Infinity;
+  
+      // Iterate through each data point
       for (let i = 0; i < value.length; i++) {
-        const element = value[i];
-
-        if (i + 1 < value.length) {
-
-          // Udregn gap mellem i og i+1
-          let timeGap = (this.TimestampToSeconds(value[i + 1].time) - this.TimestampToSeconds(element.time));
-
-          // Hvis gap er større end hvad vi havde so fare
-          if (timeGap > currentLargetsGap)
-            currentLargetsGap = timeGap;
+        const currentDataPoint = value[i];
+  
+        // Break if the current data point is the last in the array
+        if (i + 1 >= value.length) break;
+  
+        const nextDataPoint = value[i + 1];
+        const timeGapCurrentAndNextDataPoints =
+          TimeConverter.convertTimestampToSeconds(nextDataPoint.time) -
+          TimeConverter.convertTimestampToSeconds(currentDataPoint.time);
+  
+        if (
+          compareFunction(timeGapCurrentAndNextDataPoints, currentGap) && 
+          (threshold == undefined || timeGapCurrentAndNextDataPoints <= threshold)
+        ) {
+          currentGap = timeGapCurrentAndNextDataPoints;
         }
       }
-      // Returner listen af tags og deres time gap i sekunder
-      toReturn.push({ tagId: key, gap: currentLargetsGap })
-    })
-    return toReturn;
-  };
-
-  public SmallestGapInData(): TagTimeGap[] {
-    const toReturn: TagTimeGap[] = [];
-
-    // For hver key
-    this.dataCache.forEach((value, key) => {
-      let currentSmallestGap: number = 0;
-
-      // Tjek alle values til den key
-      for (let i = 0; i < value.length; i++) {
-        const element = value[i];
-
-        if (i + 1 < value.length) {
-
-          // Udregn gap mellem i og i+1
-          let timeGap = (this.TimestampToSeconds(value[i + 1].time) - this.TimestampToSeconds(element.time));
-
-          // Hvis gap er større end hvad vi havde so fare
-          if (timeGap < currentSmallestGap)
-            currentSmallestGap = timeGap;
-        }
-      }
-      // Returner listen af tags og deres time gap i sekunder
-      toReturn.push({ tagId: key, gap: currentSmallestGap })
-    })
-    return toReturn;
+  
+      return { tagId: key, gap: currentGap };
+    });
   }
-
-  public AverageGapInData(): TagTimeGap[] {
-    const toReturn: TagTimeGap[] = [];
-
-    // For hver key
-    this.dataCache.forEach((value, key) => {
+  
+  /**
+   * Finds the average data gap for each tag in the dataset.
+   * @returns {TagTimeGap[]}
+   */
+  public AverageGapInData(threshold?: number): TagTimeGap[] {
+    return this.processTimeGapData((key, value) => {
       let timegapList: number[] = [];
-
-      // Tjek alle values til den key
+  
+      // Iterate through each data point
       for (let i = 0; i < value.length; i++) {
-        const element = value[i];
+        const currentDataPoint = value[i];
+  
+        // Break if the current data point is the last in the array
+        if (i + 1 >= value.length) break;
+  
+        const nextDataPoint = value[i + 1]
+        const timeGapCurrentAndNextDataPoints = 
+          TimeConverter.convertTimestampToSeconds(nextDataPoint.time) - 
+          TimeConverter.convertTimestampToSeconds(currentDataPoint.time);
 
-        if (i + 1 < value.length) {
-
-          // Udregn gap mellem i og i+1
-          let timeGap = (this.TimestampToSeconds(value[i + 1].time) - this.TimestampToSeconds(element.time));
-          // Tilføj timegap til liste
-          timegapList.push(timeGap);
+        if (threshold == undefined || timeGapCurrentAndNextDataPoints <= threshold) {
+          timegapList.push(timeGapCurrentAndNextDataPoints);
         }
       }
-      // Gennemsnit af liste og 
+      
+      // Calculate average
       const sum = timegapList.reduce((a, b) => a + b, 0);
-      const avg = (sum / timegapList.length) || 0;
-
-      toReturn.push({ tagId: key, gap: parseFloat(avg.toFixed(2)) })
-    })
-    return toReturn;
+      const average = (sum / timegapList.length) || 0;
+  
+      return { tagId: key, gap: parseFloat(average.toFixed(2)) };
+    });
   }
 
-  private TimestampToSeconds(timestamp: string): number {
-    const timeArrStr = timestamp.split(":");
-    return (parseInt(timeArrStr[0]) * 60 * 60 + parseInt(timeArrStr[1]) * 60 + parseInt(timeArrStr[2]));
-  }
-
+  /**
+   * Count the amount of data points that occurred during the
+   * experiment in and aggregate separate the count into intervals.
+   * @param {number} intervalSize the size of the intervals
+   * @param {Map<string, ExtractedDataType[]>} data
+   * @returns {Map<string, number>} A map where the key is an interval
+   * and the value is the number of data points for that interval
+   */
   public countDataByInterval(intervalSize: number, data: Map<string, ExtractedDataType[]>): Map<string, number> {
     const result = new Map<string, number>();
 
-    for (const [key, value] of data) {
-      const timestamps = value.map((item) => this.convertTimestampToSeconds(item.time));
+    for (const [, value] of data) {
+      const timestamps = value.map((item) => TimeConverter.convertTimestampToSeconds(item.time));
       const intervalStart = Math.floor(timestamps[0] / intervalSize) * intervalSize;
 
       let currentInterval = intervalStart;
@@ -125,36 +110,36 @@ export class UbisenseDataAnalyzerService {
         if (timestamp < intervalEnd) {
           intervalCount++;
         } else {
-          const intervalKey = this.formatInterval(currentInterval, intervalEnd);
+          const intervalKey = TimeFormatter.formatInterval(currentInterval, intervalEnd);
           result.set(intervalKey, (result.get(intervalKey) || 0) + intervalCount);
           currentInterval = intervalEnd;
           intervalCount = 1;
         }
       }
 
-      const lastIntervalKey = this.formatInterval(currentInterval, currentInterval + intervalSize);
+      const lastIntervalKey = TimeFormatter.formatInterval(currentInterval, currentInterval + intervalSize);
       result.set(lastIntervalKey, (result.get(lastIntervalKey) || 0) + intervalCount);
     }
 
     return result;
   }
 
-  private convertTimestampToSeconds(timestamp: string): number {
-    const [hours, minutes, seconds] = timestamp.split(':').map((str) => parseInt(str));
-    return hours * 3600 + minutes * 60 + seconds;
+  /**
+   * Processes the data in the data cache to extract information about time gaps.
+   * @param {function(key: string, value: ExtractedDataType[]): TagTimeGap} processValues 
+   * Callback that specifies how the data should be processed
+   * @returns {TagTimeGap} A list of TagTimeGaps where the type of gap is specified
+   *  by the provided callback function 
+   */
+  private processTimeGapData(processValues: (key: string, value: ExtractedDataType[]) => TagTimeGap): TagTimeGap[] {
+    const toReturn: TagTimeGap[] = [];
+  
+    // Process for each tag
+    UbisenseDataParserService.GetParsedData().forEach((value, key) => {
+      const result = processValues(key, value);
+      toReturn.push(result);
+    });
+  
+    return toReturn;
   }
-
-  private formatInterval(start: number, end: number): string {
-    const startStr = this.formatTimestamp(start);
-    const endStr = this.formatTimestamp(end);
-    return `${startStr}-${endStr}`;
-  }
-
-  private formatTimestamp(timestamp: number): string {
-    const hours = Math.floor(timestamp / 3600).toString().padStart(2, '0');
-    const minutes = Math.floor((timestamp % 3600) / 60).toString().padStart(2, '0');
-    const seconds = (timestamp % 60).toString().padStart(2, '0');
-    return `${hours}:${minutes}:${seconds}`;
-  }
-
 }

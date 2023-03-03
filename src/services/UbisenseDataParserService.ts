@@ -38,8 +38,6 @@ export class UbisenseDataParserService {
       const x: string = line.substring(63, 68).trim();
       const y: string = line.substring(71, 76).trim();
 
-
-
       if (valid ? dataValid == "ok" : dataValid != "ok") {
         // if (parseFloat(variance) <= 4) {
         if (this.dataCache.has(tag)) {
@@ -49,7 +47,6 @@ export class UbisenseDataParserService {
         }
       }
     })
-    console.log(this.dataCache);
   }
 
   public static GetParsedData() {

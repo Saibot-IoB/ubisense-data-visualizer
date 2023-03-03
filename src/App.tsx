@@ -15,6 +15,7 @@ import { RangeSlider } from '@mantine/core';
 
 import { FaChevronCircleLeft, FaChevronCircleRight } from 'react-icons/fa';
 import { UbisenseDataAnalyzerService } from './services/UbisenseDataAnalyzerService';
+import { isGreater, isSmaller } from './util/common/Comparison';
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 
@@ -73,9 +74,9 @@ function App() {
   useEffect(() => {
     const analyzer = new UbisenseDataAnalyzerService();
 
-    console.log(analyzer.LargestGapInData());
-    console.log(analyzer.SmallestGapInData());
-    console.log(analyzer.AverageGapInData());
+    console.log(analyzer.GetExtremeGapInData(isGreater, 60));
+    console.log(analyzer.GetExtremeGapInData(isSmaller, 60));
+    console.log(analyzer.AverageGapInData(60));
     console.log(analyzer.countDataByInterval(120, UbisenseDataParserService.GetParsedData()));
   }, [data])
 
