@@ -4,7 +4,6 @@
   box-sizing: border-box;
 }
 
-
 #chart-container {
   width: 1000px;
   margin: 2vh auto;
@@ -16,8 +15,6 @@
   background-size: 100% 100%;
   background-position: center;
 }
-
-
 
 .slider-container {
   padding: 0px 50px;
@@ -36,7 +33,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
