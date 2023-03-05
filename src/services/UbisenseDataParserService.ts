@@ -63,7 +63,7 @@ export class UbisenseDataParserService {
             const y: string = line.substring(71, 76).trim();
             // variance has index (90, 94)
 
-            if (valid ? dataValid == "ok" : dataValid != "ok") {
+            if (valid ? dataValid === "ok" : dataValid !== "ok") {
                 if (this.dataCache.has(tag)) {
                     this.dataCache.get(tag)?.push({ time, tag, x, y });
                 } else {

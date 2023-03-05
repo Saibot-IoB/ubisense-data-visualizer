@@ -50,8 +50,7 @@ export class UbisenseDataAnalyzerService {
 
                 if (
                     compareFunction(timeGapCurrentAndNextDataPoints, currentGap) &&
-                    (threshold == undefined ||
-                        timeGapCurrentAndNextDataPoints <= threshold)
+                    (threshold === undefined || timeGapCurrentAndNextDataPoints <= threshold)
                 ) {
                     currentGap = timeGapCurrentAndNextDataPoints;
                 }
@@ -82,7 +81,7 @@ export class UbisenseDataAnalyzerService {
                     TimeConverter.convertTimestampToSeconds(currentDataPoint.time);
 
                 if (
-                    threshold == undefined ||
+                    threshold === undefined ||
                     timeGapCurrentAndNextDataPoints <= threshold
                 ) {
                     timegapList.push(timeGapCurrentAndNextDataPoints);

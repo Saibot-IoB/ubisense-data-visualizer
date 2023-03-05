@@ -9,9 +9,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { Bubble } from "react-chartjs-2";
-import { UbisenseDataAnalyzerService } from "../services/UbisenseDataAnalyzerService";
 import { DatasetType, UbisenseDataParserService } from "../services/UbisenseDataParserService";
-import { isGreater, isSmaller } from "../util/common/Comparison";
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 
@@ -46,6 +44,7 @@ interface LocationChartProps {
 }
 
 const LocationChart = (props: LocationChartProps) => {
+    const { range } = props;
     const [data, setdata] = useState<DatasetType>([]);
 
     useEffect(() => {
@@ -54,26 +53,26 @@ const LocationChart = (props: LocationChartProps) => {
             UbisenseDataParserService.parseData(await ubiData.text(), true);
 
             setdata(
-                UbisenseDataParserService.GetBubbleChartDatasets(props.range[0], props.range[1])
+                UbisenseDataParserService.GetBubbleChartDatasets(range[0], range[1])
             );
         };
 
         start();
-    }, []);
+    }, [range]);
 
-    useEffect(() => {
-        const analyzer = new UbisenseDataAnalyzerService();
+    // useEffect(() => {
+    //     const analyzer = new UbisenseDataAnalyzerService();
 
-        // console.log(analyzer.GetExtremeGapInData(isGreater, 60));
-        // console.log(analyzer.GetExtremeGapInData(isSmaller, 60));
-        // console.log(analyzer.AverageGapInData(60));
-        // console.log(
-        //     analyzer.countDataByInterval(
-        //         120,
-        //         UbisenseDataParserService.GetParsedData()
-        //     )
-        // );
-    }, [data]);
+    //     console.log(analyzer.GetExtremeGapInData(isGreater, 60));
+    //     console.log(analyzer.GetExtremeGapInData(isSmaller, 60));
+    //     console.log(analyzer.AverageGapInData(60));
+    //     console.log(
+    //         analyzer.countDataByInterval(
+    //             120,
+    //             UbisenseDataParserService.GetParsedData()
+    //         )
+    //     );
+    // }, [data]);
 
     useEffect(() => {
         setdata(

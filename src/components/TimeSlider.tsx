@@ -10,6 +10,7 @@ interface TimeSliderProps {
 }
 
 const TimeSlider = (props: TimeSliderProps) => {
+    const { onRangeChanged } = props;
     const [range, setrange] = useState<[number, number]>([0, 300]);
     const intervalInputElement = useRef<HTMLInputElement>(null);
     const [duration, setDuration] = useState<{ start: number; end: number }>({
@@ -46,8 +47,8 @@ const TimeSlider = (props: TimeSliderProps) => {
     }, []);
 
     useEffect(() => {
-        props.onRangeChanged(range);
-    }, [range]);
+        onRangeChanged(range);
+    }, [range, onRangeChanged]);
 
     const handleDecrementInterval = () => {
         if (range[0] - parseInt(intervalInputElement.current!.value) >= 0) {
