@@ -1,11 +1,11 @@
 export interface IsGreaterFunction {
-  type: "isGreater";
-  (a: number, b: number): boolean;
+    type: "isGreater";
+    (a: number, b: number): boolean;
 }
 
 export interface IsSmallerFunction {
-  type: "isSmaller";
-  (a: number, b: number): boolean;
+    type: "isSmaller";
+    (a: number, b: number): boolean;
 }
 
 /**
@@ -16,7 +16,7 @@ export interface IsSmallerFunction {
  * @returns {boolean}
  */
 export const isGreater: IsGreaterFunction = (a: number, b: number): boolean => {
-  return a > b;
+    return a > b;
 };
 isGreater.type = "isGreater";
 
@@ -28,6 +28,6 @@ isGreater.type = "isGreater";
  * @returns {boolean}
  */
 export const isSmaller: IsSmallerFunction = (a: number, b: number): boolean => {
-  return a < b;
+    return a < b;
 };
 isSmaller.type = "isSmaller";
