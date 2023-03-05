@@ -77,7 +77,7 @@ export class UbisenseDataParserService {
         return this.dataCache;
     }
 
-    public static GetExperimentDuration(): { start: number; end: number } {
+    public static GetExperimentDuration(): { start: number; end: number } | undefined {
         const timeArr: number[] = [];
 
         this.dataCache.forEach((value, key) => {
@@ -91,6 +91,7 @@ export class UbisenseDataParserService {
             });
         });
 
+        if (timeArr.length === 0) return undefined;
         return { start: 0, end: Math.max(...timeArr) - Math.min(...timeArr) };
     }
 
