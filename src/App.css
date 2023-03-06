@@ -5,15 +5,14 @@
 }
 
 #chart-container {
-    width: 1000px;
+    width: 500px;
     margin: 2vh auto;
-    height: 84vh;
     display: block;
     position: relative;
     background-image: url("/public/chart-background.png");
     background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-position: center;
+    background-size: 350px 96%;
+    background-position: 27px 10px;
 }
 
 .slider-container {

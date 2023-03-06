@@ -26,17 +26,24 @@ export const ChartOptions = {
             max: 25,
             min: 0,
             type: "linear" as const,
+            grid: {
+                display: false
+            }
         },
         x: {
             max: 16,
             min: 0,
             type: "linear" as const,
+            grid: {
+                display: false
+            }
         },
     },
     animation: {
         duration: 0,
     },
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
+    aspectRatio: 0.5
 };
 
 interface TimeGapChartProps {
@@ -55,7 +62,7 @@ const TimeGapChart = (props: TimeGapChartProps) => {
 
             setdata(convertTimeGapDataToChartData);
         };
-        
+
         start();
     }, []);
 
@@ -71,7 +78,7 @@ const TimeGapChart = (props: TimeGapChartProps) => {
 
         timeGapsData.forEach((gapData, key) => {
             const bubbleChartData: BubbleChartDataType[] = [];
-            
+
             gapData.forEach(value => {
                 if (
                     TimeConverter.convertTimestampToSeconds(value.firstDataPoint.time) >= (range[0] + experimentStart) &&

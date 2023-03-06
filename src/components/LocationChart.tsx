@@ -23,20 +23,27 @@ export const ChartOptions = {
     scales: {
         y: {
             beginAtZero: true,
-            max: 25,
+            max: 23,
             min: 0,
             type: "linear" as const,
+            grid: {
+                display: false
+              }
         },
         x: {
-            max: 16,
+            max: 11,
             min: 0,
             type: "linear" as const,
+            grid: {
+                display: false
+            }
         },
     },
     animation: {
         duration: 0,
     },
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
+    aspectRatio: 0.5
 };
 
 interface LocationChartProps {
