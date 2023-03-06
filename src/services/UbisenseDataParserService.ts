@@ -74,7 +74,7 @@ export class UbisenseDataParserService {
     }
 
     public static GetParsedData() {
-        return this.dataCache;
+        return new Map(this.dataCache);
     }
 
     public static GetExperimentDuration(): { start: number; end: number } | undefined {
