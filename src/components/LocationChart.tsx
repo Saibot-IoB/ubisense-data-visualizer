@@ -58,7 +58,7 @@ const LocationChart = (props: LocationChartProps) => {
         };
 
         start();
-    }, [range]);
+    }, []);
 
     // useEffect(() => {
     //     const analyzer = new UbisenseDataAnalyzerService();
@@ -78,7 +78,7 @@ const LocationChart = (props: LocationChartProps) => {
         setdata(
             UbisenseDataParserService.GetBubbleChartDatasets(props.range[0], props.range[1])
         );
-    }, [props.range]);
+    }, [range]);
 
     return (
         <div id="chart-container">

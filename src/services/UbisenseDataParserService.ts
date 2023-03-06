@@ -7,10 +7,17 @@ export type ExtractedDataType = {
     y: string;
 };
 
-type BubbleChartDataType = {
+export type TimeGapData = {
+    firstDataPoint: ExtractedDataType;
+    secondDataPoint: ExtractedDataType;
+    timeGapSize: number;
+};
+
+export type BubbleChartDataType = {
     x: number;
     y: number;
     r: number;
+    label?: string;
 };
 
 export type DatasetType = {
@@ -19,7 +26,7 @@ export type DatasetType = {
     backgroundColor: string;
 }[];
 
-const TagToEntityMap: Record<string, string> = {
+export const TagToEntityMap: Record<string, string> = {
     "00:11:CE:00:00:00:CB:34": "Participant 5",
     "00:11:CE:00:00:00:CB:23": "Participant 4",
     "00:11:CE:00:00:00:CB:2B": "Participant 3",
@@ -31,7 +38,7 @@ const TagToEntityMap: Record<string, string> = {
     "00:11:CE:00:00:00:CB:33": "White",
 };
 
-const EntityColors: string[] = [
+export const EntityColors: string[] = [
     "rgba(233, 30, 99), 0.5)",
     "rgba(156, 39, 17, 0.5)",
     "rgba(3, 169, 24, 0.5)",
@@ -64,13 +71,80 @@ export class UbisenseDataParserService {
             // variance has index (90, 94)
 
             if (valid ? dataValid === "ok" : dataValid !== "ok") {
-                if (this.dataCache.has(tag)) {
-                    this.dataCache.get(tag)?.push({ time, tag, x, y });
-                } else {
-                    this.dataCache.set(tag, [{ time, tag, x, y }]);
+                if (!this.dataCache.has(tag)) {
+                    this.dataCache.set(tag, []);
+                }
+                const dataList = this.dataCache.get(tag);
+                if (dataList && !dataList.some(dataPoint => dataPoint.time === time)) {
+                    dataList.push({ time, tag, x, y });
                 }
             }
         });
+    }
+
+    public static findTimeGaps(timeGapThreshold: number): Map<string, TimeGapData[]> {
+        const result: Map<string, TimeGapData[]> = new Map();
+        this.GetParsedData().forEach((dataList, id) => {
+            const timeGapDataList: TimeGapData[] = [];
+            for (let i = 0; i < dataList.length - 1; i++) {
+                const firstDataPoint = dataList[i];
+                const secondDataPoint = dataList[i + 1];
+                const timeGapSize =
+                    TimeConverter.convertTimestampToSeconds(secondDataPoint.time) -
+                    TimeConverter.convertTimestampToSeconds(firstDataPoint.time);
+
+                if (timeGapSize > timeGapThreshold) {
+                    timeGapDataList.push({ firstDataPoint, secondDataPoint, timeGapSize });
+                }
+            }
+            if (timeGapDataList.length > 0) {
+                result.set(TagToEntityMap[id], timeGapDataList);
+            }
+        });
+
+        return result;
+    }
+
+    public static findAverageWithoutLargetsNGaps(filterNGaps: number): Map<string, [number, number]> {
+        const result: Map<string, [number, number]> = new Map();
+        this.GetParsedData().forEach((dataList, id) => {
+            const timeGaps: number[] = [];
+
+            for (let i = 0; i < dataList.length - 1; i++) {
+                const firstDataPoint = dataList[i];
+                const secondDataPoint = dataList[i + 1];
+                const timeGapSize =
+                    TimeConverter.convertTimestampToSeconds(secondDataPoint.time) -
+                    TimeConverter.convertTimestampToSeconds(firstDataPoint.time);
+
+                timeGaps.push(timeGapSize);
+            }
+
+            timeGaps.sort((a: number, b: number) => {
+                return b - a;
+            });
+
+            if (timeGaps.length > filterNGaps) {
+                result.set(
+                    id, 
+                    [
+                        timeGaps.reduce((a, b) => a + b) / timeGaps.length,
+                        timeGaps.slice(filterNGaps).reduce((a, b) => a + b) / (timeGaps.length - filterNGaps)
+                    ]
+                );
+            } else {
+                result.set(
+                    id, 
+                    [
+                        timeGaps.reduce((a, b) => a + b) / timeGaps.length,
+                        Infinity
+                    ]
+                );
+            }
+        
+        });
+
+        return result;
     }
 
     public static GetParsedData() {

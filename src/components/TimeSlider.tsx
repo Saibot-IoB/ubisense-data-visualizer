@@ -7,11 +7,12 @@ import { TimeFormatter } from "../util/Formatters/TimeFormatter";
 
 interface TimeSliderProps {
     onRangeChanged(value: [number, number]): void;
+    initialRange: [number, number]
 }
 
 const TimeSlider = (props: TimeSliderProps) => {
-    const { onRangeChanged } = props;
-    const [range, setrange] = useState<[number, number]>([0, 300]);
+    const { onRangeChanged, initialRange } = props;
+    const [range, setRange] = useState<[number, number]>(initialRange);
     const intervalInputElement = useRef<HTMLInputElement>(null);
     const [duration, setDuration] = useState<{ start: number; end: number }>({
         start: 0,
@@ -38,6 +39,7 @@ const TimeSlider = (props: TimeSliderProps) => {
                 }, delay);
             } else if (fetchedDuration) {
                 setDuration(fetchedDuration);
+                setRange([range[0], range[1]]);
             } else {
                 alert("Experiment duration could not be calculated");
             }
@@ -52,12 +54,12 @@ const TimeSlider = (props: TimeSliderProps) => {
 
     const handleDecrementInterval = () => {
         if (range[0] - parseInt(intervalInputElement.current!.value) >= 0) {
-            setrange([
+            setRange([
                 (range[0] -= parseInt(intervalInputElement.current!.value)),
                 (range[1] -= parseInt(intervalInputElement.current!.value)),
             ]);
         } else {
-            setrange([(range[0] = 0), range[1]]);
+            setRange([(range[0] = 0), range[1]]);
         }
     };
 
@@ -66,12 +68,12 @@ const TimeSlider = (props: TimeSliderProps) => {
             range[1] + parseInt(intervalInputElement.current!.value) <=
             duration.end
         ) {
-            setrange([
+            setRange([
                 (range[0] += parseInt(intervalInputElement.current!.value)),
                 (range[1] += parseInt(intervalInputElement.current!.value)),
             ]);
         } else {
-            setrange([range[0], (range[1] = duration.end)]);
+            setRange([range[0], (range[1] = duration.end)]);
         }
     };
 
@@ -89,7 +91,7 @@ const TimeSlider = (props: TimeSliderProps) => {
                     max={duration.end}
                     mt="xl"
                     defaultValue={range}
-                    onChangeEnd={(e) => setrange(e)}
+                    onChangeEnd={(e) => setRange(e)}
                     value={range}
                 />
             </div>
