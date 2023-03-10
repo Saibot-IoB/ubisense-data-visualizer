@@ -2,7 +2,7 @@ import { UbisenseDataParserService } from "./UbisenseDataParserService";
 import { TimeFormatter } from "../util/Formatters/TimeFormatter";
 import { TimeConverter } from "../util/Converters/TimeConverter";
 import { ComparisonFunction } from "../common/types/Unions";
-import { ExtractedDataType, TagTimeGap } from "../common/types/SimpleTypes";
+import { ExtractedDataType, TagTimeGap } from "../common/types/Simple";
 
 export class UbisenseDataAnalyzerService {
     /**

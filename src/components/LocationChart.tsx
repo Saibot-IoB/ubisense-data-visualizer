@@ -1,4 +1,3 @@
-
 import {
   Chart as ChartJS,
   LinearScale,
@@ -11,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Bubble } from "react-chartjs-2";
 import { UbisenseDataParserService } from "../services/UbisenseDataParserService";
 import { DefaultBubbleChartConfig } from "../common/config/ChartConfigs"
-import { DatasetType } from "../common/types/SimpleTypes";
+import { DatasetType } from "../common/types/Simple";
 
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
@@ -28,10 +27,6 @@ const LocationChart = (props: LocationChartProps) => {
     const start = async () => {
       const ubiData = await fetch("/experiment1.txt");
       UbisenseDataParserService.parseData(await ubiData.text(), true);
-
-      setdata(
-        UbisenseDataParserService.GetBubbleChartDatasets(range[0], range[1])
-      );
     };
 
     start();
@@ -39,7 +34,7 @@ const LocationChart = (props: LocationChartProps) => {
 
   useEffect(() => {
     setdata(
-      UbisenseDataParserService.GetBubbleChartDatasets(props.range[0], props.range[1])
+      UbisenseDataParserService.GetBubbleChartDatasets(range[0], range[1])
     );
   }, [range]);
 

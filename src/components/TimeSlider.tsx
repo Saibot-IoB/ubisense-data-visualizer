@@ -12,12 +12,14 @@ interface TimeSliderProps {
 
 const TimeSlider = (props: TimeSliderProps) => {
     const { onRangeChanged, initialRange } = props;
-    const [range, setRange] = useState<[number, number]>(initialRange);
+    const [range, setRange] = useState<[number, number]>([...initialRange]);
     const intervalInputElement = useRef<HTMLInputElement>(null);
     const [duration, setDuration] = useState<{ start: number; end: number }>({
         start: 0,
         end: 0,
     });
+
+    const initialRangeRef = useRef(initialRange);
 
     /**
      * Load and set the duration of the experiment.
@@ -39,7 +41,7 @@ const TimeSlider = (props: TimeSliderProps) => {
                 }, delay);
             } else if (fetchedDuration) {
                 setDuration(fetchedDuration);
-                setRange([range[0], range[1]]);
+                setRange([...initialRangeRef.current]);
             } else {
                 alert("Experiment duration could not be calculated");
             }

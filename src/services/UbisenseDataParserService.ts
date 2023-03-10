@@ -1,5 +1,5 @@
 import { EntityColors, TagToEntityMap } from "../common/constants/EntityConstants";
-import { BubbleChartDataType, DatasetType, ExtractedDataType, TimeGapData } from "../common/types/SimpleTypes";
+import { BubbleChartDataType, DatasetType, ExtractedDataType, TimeGapData } from "../common/types/Simple";
 import { TimeConverter } from "../util/Converters/TimeConverter";
 
 export class UbisenseDataParserService {

@@ -5,13 +5,13 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Bubble } from "react-chartjs-2";
 import { UbisenseDataParserService } from "../services/UbisenseDataParserService";
 import { TimeConverter } from "../util/Converters/TimeConverter";
 import { DefaultBubbleChartConfig } from "../common/config/ChartConfigs"
-import { BubbleChartDataType, DatasetType } from "../common/types/SimpleTypes";
+import { BubbleChartDataType, DatasetType } from "../common/types/Simple";
 import { EntityColors } from "../common/constants/EntityConstants";
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
@@ -23,24 +23,18 @@ interface TimeGapChartProps {
 const TimeGapChart = (props: TimeGapChartProps) => {
   const { range } = props;
   const [data, setdata] = useState<DatasetType>([]);
-  const [gapSizeThreshold, setGapSizeThreshold] = useState<number>(60);
+  const [gapSizeThreshold] = useState<number>(60);
 
   useEffect(() => {
     const start = async () => {
       const ubiData = await fetch("/experiment1.txt");
       UbisenseDataParserService.parseData(await ubiData.text(), true);
-
-      setdata(convertTimeGapDataToChartData);
     };
 
     start();
   }, []);
 
-  useEffect(() => {
-    setdata(convertTimeGapDataToChartData);
-  }, [props.range]);
-
-  const convertTimeGapDataToChartData = (): DatasetType => {
+  const convertTimeGapDataToChartData = useCallback((): DatasetType => {
     const timeGapsData = UbisenseDataParserService.findTimeGaps(gapSizeThreshold);
     const experimentStart = UbisenseDataParserService.GetExperimentInterval().start;
     const returnData: DatasetType = [];
@@ -73,13 +67,17 @@ const TimeGapChart = (props: TimeGapChartProps) => {
     });
 
     return returnData;
-  }
+  }, [gapSizeThreshold, range]);
+
+  useEffect(() => {
+    setdata(() => convertTimeGapDataToChartData());
+  }, [props.range, convertTimeGapDataToChartData]);
 
   return (
     <div id="chart-container">
       <Bubble options={DefaultBubbleChartConfig} data={{ datasets: data }} />
     </div>
   );
-}
+};
 
 export default TimeGapChart;

@@ -17,15 +17,13 @@
 
 #chart-container {
   width: 1050px;
-  height: 500px;
+  height: 530px;
   /* aspect-ratio: 2.09; */
   margin: 2vh auto;
-  /* display: block;
-    position: relative; */
-  /* background-image: url("/public/chart-background.png");
-    background-repeat: no-repeat;
-    background-size: 350px 96%;
-    background-position: 27px 10px; */
+  background-image: url("/public/chart-background.png");
+  background-repeat: no-repeat;
+  background-size: 1050px 471px;
+  background-position: 27px 31px;
 }
 
 .slider-container {

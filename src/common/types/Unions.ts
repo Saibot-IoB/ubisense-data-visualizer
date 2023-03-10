@@ -1,6 +1,6 @@
 import {
     IsGreaterFunction,
     IsSmallerFunction,
-} from "../../util/common/Comparison";
+} from "../../util/Comparison";
 
 export type ComparisonFunction = IsGreaterFunction | IsSmallerFunction;
