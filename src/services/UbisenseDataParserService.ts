@@ -4,9 +4,6 @@ import { TimeConverter } from "../util/Converters/TimeConverter";
 
 export class UbisenseDataParserService {
   public static dataCache: Map<string, ExtractedDataType[]> = new Map<string, ExtractedDataType[]>();
-  public static participant5: BubbleChartDataType[] = [];
-  public static participant4: BubbleChartDataType[] = [];
-  public static robot1: BubbleChartDataType[] = [];
 
   public static parseData(data: string, valid: boolean) {
     const lines: string[] = data.split("\n");
