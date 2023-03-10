@@ -8,9 +8,11 @@ import {
 import { useEffect, useState } from "react";
 
 import { Bubble } from "react-chartjs-2";
-import { BubbleChartDataType, DatasetType, EntityColors, UbisenseDataParserService } from "../services/UbisenseDataParserService";
+import { UbisenseDataParserService } from "../services/UbisenseDataParserService";
 import { TimeConverter } from "../util/Converters/TimeConverter";
-import { DefaultBubbleChartConfig } from "../common/ChartConfigs"
+import { DefaultBubbleChartConfig } from "../common/config/ChartConfigs"
+import { BubbleChartDataType, DatasetType } from "../common/types/SimpleTypes";
+import { EntityColors } from "../common/constants/EntityConstants";
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 

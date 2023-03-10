@@ -9,8 +9,9 @@ import {
 import { useEffect, useState } from "react";
 
 import { Bubble } from "react-chartjs-2";
-import { DatasetType, UbisenseDataParserService } from "../services/UbisenseDataParserService";
-import { DefaultBubbleChartConfig } from "../common/ChartConfigs"
+import { UbisenseDataParserService } from "../services/UbisenseDataParserService";
+import { DefaultBubbleChartConfig } from "../common/config/ChartConfigs"
+import { DatasetType } from "../common/types/SimpleTypes";
 
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);

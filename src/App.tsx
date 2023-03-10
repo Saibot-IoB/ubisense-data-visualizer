@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import { TagToEntityMap } from "./common/constants/EntityConstants";
 
 import LocationChart from "./components/LocationChart";
 import TimeGapChart from "./components/TimeGapChart";
 import TimeSlider from "./components/TimeSlider";
-import { TagToEntityMap, UbisenseDataParserService } from "./services/UbisenseDataParserService";
+import { UbisenseDataParserService } from "./services/UbisenseDataParserService";
 
 function App() {
   const [locationRange, setLocationRange] = useState<[number, number]>([0, 300]);

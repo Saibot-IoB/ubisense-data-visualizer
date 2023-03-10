@@ -1,24 +1,8 @@
-import {
-    ExtractedDataType,
-    UbisenseDataParserService,
-} from "./UbisenseDataParserService";
+import { UbisenseDataParserService } from "./UbisenseDataParserService";
 import { TimeFormatter } from "../util/Formatters/TimeFormatter";
 import { TimeConverter } from "../util/Converters/TimeConverter";
-import { ComparisonFunction } from "../Types/Unions";
-
-export type TagTimeGap = {
-    tagId: string;
-    gap: number;
-};
-
-export type TagTimeGapInterval = {
-    interval: {
-        from: number;
-        to: number;
-        tag: string;
-        amoung: number;
-    };
-};
+import { ComparisonFunction } from "../common/types/Unions";
+import { ExtractedDataType, TagTimeGap } from "../common/types/SimpleTypes";
 
 export class UbisenseDataAnalyzerService {
     /**
