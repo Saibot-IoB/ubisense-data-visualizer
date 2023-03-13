@@ -33,3 +33,10 @@ export type TableDataRow = {
   propertyName: string,
   propertyValue: string | number
 }[];
+
+export type LineDatasetType = {
+  label: string,
+  data: number[],
+  borderColor: string,
+  backgroundColor: string
+}[];
