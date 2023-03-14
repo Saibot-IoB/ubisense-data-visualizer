@@ -2,16 +2,18 @@ import { RangeSlider } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 
 import { FaChevronCircleLeft, FaChevronCircleRight } from "react-icons/fa";
-import { UbisenseDataParserService } from "../services/UbisenseDataParserService";
+import { LocationChartType } from "../common/enums/LocationCharts";
+import { getExperimentDuration } from "../util/ExperimentTimeUtil";
 import { TimeFormatter } from "../util/Formatters/TimeFormatter";
 
 interface TimeSliderProps {
     onRangeChanged(value: [number, number]): void;
-    initialRange: [number, number]
+    initialRange: [number, number];
+    locationChartType: LocationChartType;
 }
 
 const TimeSlider = (props: TimeSliderProps) => {
-    const { onRangeChanged, initialRange } = props;
+    const { onRangeChanged, initialRange, locationChartType } = props;
     const [range, setRange] = useState<[number, number]>([...initialRange]);
     const intervalInputElement = useRef<HTMLInputElement>(null);
     const [duration, setDuration] = useState<{ start: number; end: number }>({
@@ -22,17 +24,20 @@ const TimeSlider = (props: TimeSliderProps) => {
     const initialRangeRef = useRef(initialRange);
 
     /**
-     * Load and set the duration of the experiment.
-     * The duration is received from the UbisenseDataParserService,
-     * so the data is loaded using exponential retries, in case
+     * Load and set the interval of the experiment.
+     * The data is loaded using exponential retries, in case
      * the data is not available yet.
      */
     useEffect(() => {
         let retryCount = 0;
 
         const attemptFetchDuration = (): void => {
-            const fetchedDuration = UbisenseDataParserService.GetExperimentDuration();
-            if (!fetchedDuration && retryCount < 5) {
+            const fetchedDuration = getExperimentDuration(locationChartType);
+
+            if (
+                (!fetchedDuration || (fetchedDuration.start === 0 && fetchedDuration.end === 0)) // If duration is invalid
+                && retryCount < 5 // and retires are less than 5
+            ) {
                 const delay = Math.pow(2, retryCount) * 200;
 
                 setTimeout(() => {
@@ -41,14 +46,19 @@ const TimeSlider = (props: TimeSliderProps) => {
                 }, delay);
             } else if (fetchedDuration) {
                 setDuration(fetchedDuration);
-                setRange([...initialRangeRef.current]);
+                // If the initial range of the slider is [0, 0], set it from 0 to max
+                if (initialRangeRef.current[0] === 0 && initialRangeRef.current[1] === 0) {
+                    setRange([0, fetchedDuration.end]);
+                } else {
+                    setRange([...initialRangeRef.current]);
+                }
             } else {
                 alert("Experiment duration could not be calculated");
             }
         }
 
         attemptFetchDuration();
-    }, []);
+    }, [locationChartType]);
 
     useEffect(() => {
         onRangeChanged(range);
@@ -86,7 +96,7 @@ const TimeSlider = (props: TimeSliderProps) => {
                     thumbSize={20}
                     label={
                         TimeFormatter.formatTimestamp(range[0]) +
-                        " ---" +
+                        " --- " +
                         TimeFormatter.formatTimestamp(range[1])
                     }
                     min={duration.start}
@@ -104,7 +114,7 @@ const TimeSlider = (props: TimeSliderProps) => {
             <div id="intervalButtons-container">
                 <p>
                     {TimeFormatter.formatTimestamp(range[0]) +
-                        " ---" +
+                        " --- " +
                         TimeFormatter.formatTimestamp(range[1])}
                 </p>
                 <div className="intervalButtons-innerContainer">

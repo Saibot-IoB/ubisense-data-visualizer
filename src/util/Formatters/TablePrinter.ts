@@ -24,6 +24,10 @@ export class TablePrinter {
         const tableData = this.tableData.map((row) => {
             const obj: Record<string, string | number> = {};
             for (const [, value] of row.entries()) {
+                if (typeof value.propertyValue === "number") {
+                    value.propertyValue = +value.propertyValue.toFixed(3);
+                }
+
                 obj[value.propertyName] = value.propertyValue;
             }
             return obj;

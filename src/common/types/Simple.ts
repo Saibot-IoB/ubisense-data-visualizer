@@ -3,7 +3,7 @@ export type TagTimeGap = {
   gap: number;
 };
 
-export type ExtractedDataType = {
+export type LocationData = {
   time: string;
   tag: string;
   x: string;
@@ -11,8 +11,8 @@ export type ExtractedDataType = {
 };
 
 export type TimeGapData = {
-  firstDataPoint: ExtractedDataType;
-  secondDataPoint: ExtractedDataType;
+  locationA: LocationData;
+  locationB: LocationData;
   timeGapSize: number;
 };
 
