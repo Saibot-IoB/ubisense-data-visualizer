@@ -1,26 +1,29 @@
 import "./App.css";
 
 import { useEffect, useState } from "react";
-import { TagToEntityMap } from "./common/constants/EntityConstants";
 
 import LocationChart from "./components/LocationChart";
-import TimeGapChart from "./components/TimeGapChart";
 import TimeSlider from "./components/TimeSlider";
-import { UbisenseDataParserService } from "./services/UbisenseDataParserService";
 import { TablePrinter } from "./util/Formatters/TablePrinter";
-import LineChart from "./components/LineChart";
+import { LocationChartType } from "./common/enums/LocationCharts";
+import { UbisenseDataAnalyzer } from "./services/UbisenseDataAnalyzer";
 
 function App() {
-  const [locationRange, setLocationRange] = useState<[number, number]>([0, 300]);
-  const [timeGapRange, setTimeGapRange] = useState<[number, number]>([0, 300]);
+    const [locationRange, setLocationRange] = useState<[number, number]>([0, 0]);
+    const [timeGapRange, setTimeGapRange] = useState<[number, number]>([0, 0]);
+    const [robotLocationRange, setRobotLocationRange] = useState<[number, number]>([0, 0]);
 
   const handleLocationRangeChanged = (value: [number, number]) => {
     setLocationRange(value);
   };
 
-  const handleTimeGapRangeChanged = (value: [number, number]) => {
-    setTimeGapRange(value);
-  }
+    const handleTimeGapRangeChanged = (value: [number, number]) => {
+        setTimeGapRange(value);
+    }
+
+    const handleRobotLocationRangeChanged = (value: [number, number]) => {
+        setRobotLocationRange(value);
+    };
 
   /**
    * Print the average time gap size without N largests gaps.
@@ -31,50 +34,63 @@ function App() {
     const filterNGaps = 10;
     let retryCount = 0;
 
-    const attemptFetchData = (): void => {
-      const data = UbisenseDataParserService.findAverageWithoutLargetsNGaps(filterNGaps);
+        const attemptFetchData = (): void => {
+            const data = UbisenseDataAnalyzer.findAverageWithoutLargetsNGaps(filterNGaps);
 
       if (data.size === 0 && retryCount < 5) {
         const delay = Math.pow(2, retryCount) * 100;
 
-        setTimeout(() => {
-          retryCount++;
-          attemptFetchData();
-        }, delay);
-      } else if (data.size > 0) {
-        const tablePrinter = new TablePrinter();
-        for (const [key, value] of data) {
-          tablePrinter.addDataRow([
-            tablePrinter.writeColumn("Entity Name", TagToEntityMap[key]),
-            tablePrinter.writeColumn("Average gap size with all gaps", value[0]),
-            tablePrinter.writeColumn(`Average gap size without the ${filterNGaps} largest gaps`, value[1])
-          ]);
-        }
+                setTimeout(() => {
+                    retryCount++;
+                    attemptFetchData();
+                }, delay);
+            } else if (data.size > 0) {
+                const tablePrinter = new TablePrinter();
+                for (const [key, value] of data) {
+                    tablePrinter.addDataRow([
+                        tablePrinter.writeColumn("Entity Name", key),
+                        tablePrinter.writeColumn("Average gap size with all gaps", value[0]),
+                        tablePrinter.writeColumn(`Average gap size without the ${filterNGaps} largest gaps`, value[1])
+                    ]);
+                }
 
-        tablePrinter.printTable(0);
-      } else {
-        console.error("Failed to fetch data after multiple retries.");
-      }
-    };
-    attemptFetchData();
-  }, []);
+                tablePrinter.printTable(0);
+            } else {
+                alert("Failed to fetch data after multiple retries.");
+            }
+        };
 
-  return (
-    <div className="outer-wrapper">
-      <div className="view-container">
-        <LineChart range={locationRange} />
-        <TimeSlider onRangeChanged={handleLocationRangeChanged} initialRange={[0, 300]} />
-      </div>
-      <div className="view-container">
-        <LocationChart range={locationRange} />
-        <TimeSlider onRangeChanged={handleLocationRangeChanged} initialRange={[0, 300]} />
-      </div>
-      <div className="view-container">
-        <TimeGapChart range={timeGapRange} />
-        <TimeSlider onRangeChanged={handleTimeGapRangeChanged} initialRange={[0, 3810]} />
-      </div>
-    </div>
-  );
+        attemptFetchData();
+    }, []);
+
+    return (
+        <div className="outer-wrapper">
+            <div className="view-container">
+                <LocationChart range={robotLocationRange} locationChartType={LocationChartType.ROBOT_DATA} />
+                <TimeSlider 
+                    onRangeChanged={handleRobotLocationRangeChanged} 
+                    initialRange={[0, 0]} 
+                    locationChartType={LocationChartType.ROBOT_DATA} 
+                />
+            </div>
+            <div className="view-container">
+                <LocationChart range={locationRange} locationChartType={LocationChartType.UBISENSE_DATA} />
+                <TimeSlider 
+                    onRangeChanged={handleLocationRangeChanged} 
+                    initialRange={[0, 0]} 
+                    locationChartType={LocationChartType.UBISENSE_DATA} 
+                />
+            </div>
+            <div className="view-container">
+                <LocationChart range={timeGapRange} locationChartType={LocationChartType.TIME_GAP_DATA} />
+                <TimeSlider 
+                    onRangeChanged={handleTimeGapRangeChanged} 
+                    initialRange={[0, 0]} 
+                    locationChartType={LocationChartType.TIME_GAP_DATA} 
+                />
+            </div>
+        </div>
+    );
 }
 
 export default App;
