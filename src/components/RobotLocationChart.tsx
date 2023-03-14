@@ -8,7 +8,6 @@ import {
 import { useEffect, useState } from "react";
 
 import { Bubble } from "react-chartjs-2";
-import { UbisenseDataParserService } from "../services/UbisenseDataParserService";
 import { DefaultBubbleChartConfig } from "../common/config/ChartConfigs"
 import { DatasetType } from "../common/types/Simple";
 import { RobotDataTransformationService } from "../services/RobotDataTransformationService";
@@ -16,18 +15,17 @@ import { RobotDataTransformationService } from "../services/RobotDataTransformat
 
 ChartJS.register(LinearScale, PointElement, Tooltip, Legend);
 
-interface LocationChartProps {
+interface RobotLocationChartProps {
   range: [number, number]
 }
 
-const LocationChart = (props: LocationChartProps) => {
+const RobotLocationChart = (props: RobotLocationChartProps) => {
   const { range } = props;
   const [data, setdata] = useState<DatasetType>([]);
 
   useEffect(() => {
     const start = async () => {
-      const ubiData = await fetch("/experiment1.txt");
-      UbisenseDataParserService.parseData(await ubiData.text(), true);
+      RobotDataTransformationService.parseData();
     };
 
     start();
@@ -35,7 +33,7 @@ const LocationChart = (props: LocationChartProps) => {
 
   useEffect(() => {
     setdata(
-      UbisenseDataParserService.GetBubbleChartDatasets(range[0], range[1])
+      RobotDataTransformationService.GetBubbleChartDatasets(range[0], range[1])
     );
   }, [range]);
 
@@ -46,4 +44,4 @@ const LocationChart = (props: LocationChartProps) => {
   );
 }
 
-export default LocationChart;
+export default RobotLocationChart;

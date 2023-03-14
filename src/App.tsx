@@ -8,10 +8,12 @@ import TimeGapChart from "./components/TimeGapChart";
 import TimeSlider from "./components/TimeSlider";
 import { UbisenseDataParserService } from "./services/UbisenseDataParserService";
 import { TablePrinter } from "./util/Formatters/TablePrinter";
+import RobotLocationChart from "./components/RobotLocationChart";
 
 function App() {
     const [locationRange, setLocationRange] = useState<[number, number]>([0, 300]);
     const [timeGapRange, setTimeGapRange] = useState<[number, number]>([0, 300]);
+    const [robotLocationRange, setRobotLocationRange] = useState<[number, number]>([0, 3000]);
 
     const handleLocationRangeChanged = (value: [number, number]) => {
         setLocationRange(value);
@@ -20,6 +22,10 @@ function App() {
     const handleTimeGapRangeChanged = (value: [number, number]) => {
         setTimeGapRange(value);
     }
+
+    const handleRobotLocationRangeChanged = (value: [number, number]) => {
+        setRobotLocationRange(value);
+    };
 
     /**
      * Print the average time gap size without N largests gaps.
@@ -61,6 +67,10 @@ function App() {
 
     return (
         <div className="outer-wrapper">
+            <div className="view-container">
+                <RobotLocationChart range={robotLocationRange} />
+                <TimeSlider onRangeChanged={handleRobotLocationRangeChanged} initialRange={[0, 3000]} />
+            </div>
             <div className="view-container">
                 <LocationChart range={locationRange} />
                 <TimeSlider onRangeChanged={handleLocationRangeChanged} initialRange={[0, 300]} />

@@ -29,4 +29,14 @@ export class TimeFormatter {
         const seconds = (timestamp % 60).toString().padStart(2, "0");
         return `${hours}:${minutes}:${seconds}`;
     }
+
+    public static formatEpochNanosecondsToTimestamp(timeString: string): string {
+        const epochNanoseconds = BigInt(timeString);
+        const timestampInSeconds = Number(epochNanoseconds / 1000000000n); 
+        const date = new Date(timestampInSeconds * 1000); 
+        const hh = date.getHours().toString().padStart(2, '0');
+        const mm = date.getMinutes().toString().padStart(2, '0');
+        const ss = date.getSeconds().toString().padStart(2, '0');
+        return `${hh}:${mm}:${ss}`;
+    }
 }
