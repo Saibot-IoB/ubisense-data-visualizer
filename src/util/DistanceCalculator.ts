@@ -1,4 +1,4 @@
-import { ExtractedDataType } from '../common/types/Simple';
+import { LocationData } from "../common/types/Simple";
 
 const allRobots: [string, string, string, string] = [
   "00:11:CE:00:00:00:CB:2C",
@@ -13,7 +13,7 @@ const FunctioningRobots: [string, string, string] = [
   "00:11:CE:00:00:00:CB:33"
 ];
 
-export const calculateRobotHumanDistances = (entityData: Map<string, ExtractedDataType[]>): Map<string, [string, number]> => {
+export const calculateRobotHumanDistances = (entityData: Map<string, LocationData[]>): Map<string, [string, number]> => {
   const returnMap: Map<string, [string, number]> = new Map();
 
   for (const [key, values] of entityData) {
@@ -26,7 +26,7 @@ export const calculateRobotHumanDistances = (entityData: Map<string, ExtractedDa
         if (!valuesAtSameTime) continue;
 
         if (returnMap.has(key)) {
-          returnMap.set(key, [innerKey, calculateEuclideanDistance(valuesAtSameTime[0],)])
+          //returnMap.set(key, [innerKey, calculateEuclideanDistance(valuesAtSameTime[0],)])
         } else {
 
         }
@@ -38,7 +38,7 @@ export const calculateRobotHumanDistances = (entityData: Map<string, ExtractedDa
   return returnMap;
 }
 
-const calculateEuclideanDistance = (a: ExtractedDataType, b: ExtractedDataType) => {
+const calculateEuclideanDistance = (a: LocationData, b: LocationData) => {
   const ax = parseFloat(a.x);
   const ay = parseFloat(a.y);
   const bx = parseFloat(b.x);
