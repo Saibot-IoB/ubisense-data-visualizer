@@ -1,0 +1,83 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.outer-wrapper {
+    width: 100%;
+}
+
+.view-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    h1 {
+        text-align: center;
+    }
+}
+
+#chart-container {
+    width: 1050px;
+    height: 530px;
+    /* aspect-ratio: 2.09; */
+    margin: 2vh auto;
+    background-image: url("../public/chart-background.png");
+    background-repeat: no-repeat;
+    background-size: 1050px 471px;
+    background-position: 27px 31px;
+}
+
+.slider-container {
+    padding: 0px 50px;
+}
+
+.timeLabel-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 50px 0px 50px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+#intervalButtons-container {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-around; */
+    flex-direction: column;
+    width: 200px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+
+    p {
+        padding-bottom: 5px;
+    }
+
+    input {
+        width: 40px;
+        text-align: center;
+        font-size: 18px;
+        margin: 0 5px;
+    }
+}
+
+.intervalButtons-innerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.pointer {
+    cursor: pointer;
+}

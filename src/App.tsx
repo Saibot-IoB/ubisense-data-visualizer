@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App.scss";
 
 import { useEffect, useState } from "react";
 
@@ -66,6 +66,7 @@ function App() {
     return (
         <div className="outer-wrapper">
             <div className="view-container">
+                <h1>Robot Locations</h1>
                 <LocationChart range={robotLocationRange} locationChartType={LocationChartType.ROBOT_DATA} />
                 <TimeSlider 
                     onRangeChanged={handleRobotLocationRangeChanged} 
@@ -74,6 +75,7 @@ function App() {
                 />
             </div>
             <div className="view-container">
+                <h1>Ubisense Locations</h1>
                 <LocationChart range={locationRange} locationChartType={LocationChartType.UBISENSE_DATA} />
                 <TimeSlider 
                     onRangeChanged={handleLocationRangeChanged} 
@@ -82,6 +84,7 @@ function App() {
                 />
             </div>
             <div className="view-container">
+                <h1>Start Locations of time gaps larger than 60 seconds</h1>
                 <LocationChart range={timeGapRange} locationChartType={LocationChartType.TIME_GAP_DATA} />
                 <TimeSlider 
                     onRangeChanged={handleTimeGapRangeChanged} 
