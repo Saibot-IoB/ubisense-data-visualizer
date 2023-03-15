@@ -1,0 +1,45 @@
+.slider-container {
+    position: relative;
+}
+
+.thumb-label {
+    font-size: 12px;
+    background-color: white;
+    padding: 2px 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    white-space: nowrap;
+    display: none;
+    z-index: 5;
+}
+
+.slider-container:hover .start-thumb-label,
+.slider-container:hover .end-thumb-label,
+.slider-container.dragging .start-thumb-label,
+.slider-container.dragging .end-thumb-label {
+  display: block;
+}
+
+.timeLabel-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+#intervalButtons-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.intervalButtons-innerContainer {
+    display: flex;
+    align-items: center;
+}
+
+input[type="number"] {
+    width: 60px;
+    text-align: center;
+    margin: 0 1rem;
+}
+  

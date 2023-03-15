@@ -3,19 +3,19 @@ import "./App.scss";
 import { useEffect, useState } from "react";
 
 import LocationChart from "./components/LocationChart";
-import TimeSlider from "./components/TimeSlider";
 import { TablePrinter } from "./util/Formatters/TablePrinter";
 import { LocationChartType } from "./common/enums/LocationCharts";
 import { UbisenseDataAnalyzer } from "./services/UbisenseDataAnalyzer";
+import TimeSlider from "./components/TimeSlider/TimeSlider";
 
 function App() {
     const [locationRange, setLocationRange] = useState<[number, number]>([0, 0]);
     const [timeGapRange, setTimeGapRange] = useState<[number, number]>([0, 0]);
     const [robotLocationRange, setRobotLocationRange] = useState<[number, number]>([0, 0]);
 
-  const handleLocationRangeChanged = (value: [number, number]) => {
-    setLocationRange(value);
-  };
+    const handleLocationRangeChanged = (value: [number, number]) => {
+        setLocationRange(value);
+    };
 
     const handleTimeGapRangeChanged = (value: [number, number]) => {
         setTimeGapRange(value);
@@ -25,20 +25,20 @@ function App() {
         setRobotLocationRange(value);
     };
 
-  /**
-   * Print the average time gap size without N largests gaps.
-   * The data is not available on the first render, so the
-   * data is fetched using exponential retries.
-   */
-  useEffect(() => {
-    const filterNGaps = 10;
-    let retryCount = 0;
+    /**
+     * Print the average time gap size without N largests gaps.
+     * The data is not available on the first render, so the
+     * data is fetched using exponential retries.
+     */
+    useEffect(() => {
+        const filterNGaps = 10;
+        let retryCount = 0;
 
         const attemptFetchData = (): void => {
             const data = UbisenseDataAnalyzer.findAverageWithoutLargetsNGaps(filterNGaps);
 
-      if (data.size === 0 && retryCount < 5) {
-        const delay = Math.pow(2, retryCount) * 100;
+            if (data.size === 0 && retryCount < 5) {
+                const delay = Math.pow(2, retryCount) * 100;
 
                 setTimeout(() => {
                     retryCount++;
@@ -68,28 +68,28 @@ function App() {
             <div className="view-container">
                 <h1>Robot Locations</h1>
                 <LocationChart range={robotLocationRange} locationChartType={LocationChartType.ROBOT_DATA} />
-                <TimeSlider 
-                    onRangeChanged={handleRobotLocationRangeChanged} 
-                    initialRange={[0, 0]} 
-                    locationChartType={LocationChartType.ROBOT_DATA} 
+                <TimeSlider
+                    onRangeChanged={handleRobotLocationRangeChanged}
+                    initialRange={[0, 0]}
+                    locationChartType={LocationChartType.ROBOT_DATA}
                 />
             </div>
             <div className="view-container">
                 <h1>Ubisense Locations</h1>
                 <LocationChart range={locationRange} locationChartType={LocationChartType.UBISENSE_DATA} />
-                <TimeSlider 
-                    onRangeChanged={handleLocationRangeChanged} 
-                    initialRange={[0, 0]} 
-                    locationChartType={LocationChartType.UBISENSE_DATA} 
+                <TimeSlider
+                    onRangeChanged={handleLocationRangeChanged}
+                    initialRange={[0, 0]}
+                    locationChartType={LocationChartType.UBISENSE_DATA}
                 />
             </div>
             <div className="view-container">
                 <h1>Start Locations of time gaps larger than 60 seconds</h1>
                 <LocationChart range={timeGapRange} locationChartType={LocationChartType.TIME_GAP_DATA} />
-                <TimeSlider 
-                    onRangeChanged={handleTimeGapRangeChanged} 
-                    initialRange={[0, 0]} 
-                    locationChartType={LocationChartType.TIME_GAP_DATA} 
+                <TimeSlider
+                    onRangeChanged={handleTimeGapRangeChanged}
+                    initialRange={[0, 0]}
+                    locationChartType={LocationChartType.TIME_GAP_DATA}
                 />
             </div>
         </div>
