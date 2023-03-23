@@ -23,7 +23,7 @@ export type BubbleChartDataType = {
   label?: string;
 };
 
-export type DatasetType = {
+export type BubbleDatasetType = {
   label: string;
   data: BubbleChartDataType[];
   backgroundColor: string;

@@ -23,7 +23,7 @@ ChartJS.register(
   Legend
 );
 
-interface LineChartProps {
+interface DistanceChartProps {
   range: [number, number]
 }
 
@@ -47,7 +47,7 @@ export const data = {
   ],
 };
 
-const LineChart = (props: LineChartProps) => {
+const DistanceChart = (props: DistanceChartProps) => {
   const { range } = props;
   const [data, setdata] = useState<LineDatasetType>([]);
 
@@ -78,4 +78,4 @@ const LineChart = (props: LineChartProps) => {
   );
 }
 
-export default LineChart;
+export default DistanceChart;

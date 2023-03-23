@@ -1,6 +1,6 @@
 import { TagToEntityMap } from "../common/constants/EntityConstants";
 import { LocationChartType } from "../common/enums/LocationCharts";
-import { DatasetType, LocationData } from "../common/types/Simple";
+import { BubbleDatasetType, LocationData } from "../common/types/Simple";
 import { generateBubbleChartDataset } from "./ChartDataGenerators";
 
 export class UbisenseDataParser {
@@ -38,7 +38,7 @@ export class UbisenseDataParser {
         return new Map(this.dataCache);
     }
 
-    public static GetBubbleChartDatasets(rangeStart: number, rangeEnd: number): DatasetType {
+    public static GetBubbleChartDatasets(rangeStart: number, rangeEnd: number): BubbleDatasetType {
         return generateBubbleChartDataset(this.dataCache, rangeStart, rangeEnd, LocationChartType.UBISENSE_DATA);
     }
 }

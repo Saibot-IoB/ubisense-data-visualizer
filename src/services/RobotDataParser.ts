@@ -1,5 +1,5 @@
 import { LocationChartType } from '../common/enums/LocationCharts';
-import { DatasetType, LocationData } from '../common/types/Simple';
+import { BubbleDatasetType, LocationData } from '../common/types/Simple';
 import { RobotToUbiLocationConverter } from '../util/Converters/RobotToUbiLocationConverter';
 import { TimeFormatter } from "../util/Formatters/TimeFormatter";
 import { generateBubbleChartDataset } from './ChartDataGenerators';
@@ -48,7 +48,7 @@ export class RobotDataParser {
         }
     }
 
-    public static GetBubbleChartDatasets(rangeStart: number, rangeEnd: number): DatasetType {
+    public static GetBubbleChartDatasets(rangeStart: number, rangeEnd: number): BubbleDatasetType {
         return generateBubbleChartDataset(this.dataCache, rangeStart, rangeEnd, LocationChartType.ROBOT_DATA);
     }
 }
