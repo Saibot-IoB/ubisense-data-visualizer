@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Bubble } from "react-chartjs-2";
 import { UbisenseDataParser } from "../services/UbisenseDataParser";
 import { DefaultBubbleChartConfig } from "../common/config/ChartConfigs"
-import { DatasetType } from "../common/types/Simple";
+import { BubbleDatasetType } from "../common/types/Simple";
 import { LocationChartType } from "../common/enums/LocationCharts";
 import { match, P } from "ts-pattern";
 import { RobotDataParser } from "../services/RobotDataParser";
@@ -25,7 +25,7 @@ interface LocationChartProps {
 
 const LocationChart = (props: LocationChartProps) => {
     const { range, locationChartType } = props;
-    const [data, setdata] = useState<DatasetType>([]);
+    const [data, setdata] = useState<BubbleDatasetType>([]);
 
     useEffect(() => {
         const start = async () => {

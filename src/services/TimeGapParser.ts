@@ -1,5 +1,5 @@
 import { LocationChartType } from "../common/enums/LocationCharts";
-import { DatasetType, LocationData } from "../common/types/Simple";
+import { BubbleDatasetType, LocationData } from "../common/types/Simple";
 import { generateBubbleChartDataset } from "./ChartDataGenerators";
 import { UbisenseDataAnalyzer } from "./UbisenseDataAnalyzer";
 
@@ -31,7 +31,7 @@ export class TimeGapParser {
         getData();
     }
 
-    public static GetBubbleChartDatasets(rangeStart: number, rangeEnd: number): DatasetType {
+    public static GetBubbleChartDatasets(rangeStart: number, rangeEnd: number): BubbleDatasetType {
         return generateBubbleChartDataset(this.dataCache, rangeStart, rangeEnd, LocationChartType.TIME_GAP_DATA, 6);
     }
 }

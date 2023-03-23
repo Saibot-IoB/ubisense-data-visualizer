@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import {
   CategoryScale,
   Chart as ChartJS,
@@ -9,9 +9,9 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import {Line} from 'react-chartjs-2';
-import {defaultLineChartConfig} from '../common/config/ChartConfigs';
-import {LineDataType} from "../common/types/Simple";
+import { Line } from 'react-chartjs-2';
+import { defaultLineChartConfig } from '../common/config/ChartConfigs';
+import { LineDataType } from "../common/types/Simple";
 
 ChartJS.register(
   CategoryScale,
@@ -29,13 +29,13 @@ interface LineChartProps {
 
 const LineChart = (props: LineChartProps) => {
   const { range } = props;
-  const [data, setdata] = useState<LineDataType | [] >([]);
+  const [data, setdata] = useState<LineDataType | []>([]);
 
   //  TOOOOOOOOO BE REPLACE
 
   const start = range[0];
   const end = range[1];
-  const diff = Math.abs(start-end);
+  const diff = Math.abs(start - end);
   const timeStampLabelGenerator = (startTime: number, endTime: number) => {
     const labels: string[] = [];
 
@@ -57,12 +57,12 @@ const LineChart = (props: LineChartProps) => {
     }
     return labels;
   }
-  const labels = timeStampLabelGenerator(start,end);
+  const labels = timeStampLabelGenerator(start, end);
 
-  const GenerateRandomNumberArr = (duration:number) => {
+  const GenerateRandomNumberArr = (duration: number) => {
     const numbers = [];
 
-    for (let i = 0; i < (duration/20); i++) {
+    for (let i = 0; i < (duration / 20); i++) {
       const randomNum = Math.floor(Math.random() * 80) + 1;
       numbers.push(randomNum);
     }
@@ -110,10 +110,10 @@ const LineChart = (props: LineChartProps) => {
   };
 
   //  TOOOOOOOOO BE REPLACE STOP
-  
+
   useEffect(() => {
     // const start = async () => {
-      setdata(chartData);
+    setdata(chartData);
     // };
 
     // start();

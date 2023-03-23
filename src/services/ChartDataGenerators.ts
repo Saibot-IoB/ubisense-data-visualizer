@@ -1,12 +1,15 @@
 import { EntityColors, EntityToTagMap } from "../common/constants/EntityConstants";
 import { LocationChartType } from "../common/enums/LocationCharts";
-import { BubbleChartDataType, DatasetType, LocationData } from "../common/types/Simple";
+import { BubbleChartDataType, BubbleDatasetType, LocationData } from "../common/types/Simple";
 import { TimeConverter } from "../util/Converters/TimeConverter";
 import { getExperimentInterval } from "../util/ExperimentTimeUtil";
+import {calculateRobotHumanDistances} from '../util/DistanceCalculator';
 
 export const generateBubbleChartDataset = (locationData: Map<string, LocationData[]>, rangeStart: number, rangeEnd: number, chart: LocationChartType, bubbleRadius?: number) =>  {
-    const datasets: DatasetType = [];
+    const datasets: BubbleDatasetType = [];
     const experimentStart = getExperimentInterval(chart).start;
+    
+    console.log(calculateRobotHumanDistances(locationData, 20));
 
     locationData.forEach((value, key) => {
         const currentArr: BubbleChartDataType[] = [];
