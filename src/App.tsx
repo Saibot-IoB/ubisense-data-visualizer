@@ -7,10 +7,14 @@ import { TablePrinter } from "./util/Formatters/TablePrinter";
 import { LocationChartType } from "./common/enums/LocationCharts";
 import { UbisenseDataAnalyzer } from "./services/UbisenseDataAnalyzer";
 import TimeSlider from "./components/TimeSlider/TimeSlider";
+import LineChart from "./components/LineChart";
 
 function App() {
     const [locationRange, setLocationRange] = useState<[number, number]>([0, 0]);
     const [timeGapRange, setTimeGapRange] = useState<[number, number]>([0, 0]);
+    const [robot4001DistanceRange, setrobot4001DistanceRange] = useState<[number, number]>([0, 0]);
+    const [robot4002DistanceRange, setrobot4002DistanceRange] = useState<[number, number]>([0, 0]);
+    const [robotWhiteDistanceRange, setrobotWhiteDistanceRange] = useState<[number, number]>([0, 0]);
     const [robotLocationRange, setRobotLocationRange] = useState<[number, number]>([0, 0]);
 
     const handleLocationRangeChanged = (value: [number, number]) => {
@@ -24,6 +28,16 @@ function App() {
     const handleRobotLocationRangeChanged = (value: [number, number]) => {
         setRobotLocationRange(value);
     };
+
+    const handleDistanceRangeChanged_4001 = (value: [number, number]) => {
+            setrobot4001DistanceRange(value);
+    }
+    const handleDistanceRangeChanged_4002 = (value: [number, number]) => {
+        setrobot4002DistanceRange(value);
+    }
+    const handleDistanceRangeChanged_White = (value: [number, number]) => {
+        setrobotWhiteDistanceRange(value);
+    }
 
     /**
      * Print the average time gap size without N largests gaps.
@@ -66,7 +80,7 @@ function App() {
     return (
         <div className="outer-wrapper">
             <div className="view-container">
-                <h1>Robot Locations</h1>
+                <h1>Robot Locations (Robot Data)</h1>
                 <LocationChart range={robotLocationRange} locationChartType={LocationChartType.ROBOT_DATA} />
                 <TimeSlider
                     onRangeChanged={handleRobotLocationRangeChanged}
@@ -88,6 +102,33 @@ function App() {
                 <LocationChart range={timeGapRange} locationChartType={LocationChartType.TIME_GAP_DATA} />
                 <TimeSlider
                     onRangeChanged={handleTimeGapRangeChanged}
+                    initialRange={[0, 0]}
+                    locationChartType={LocationChartType.TIME_GAP_DATA}
+                />
+            </div>
+            <div className="view-container">
+                <h1>Robot 4001 distance to persons</h1>
+                <LineChart range={robot4001DistanceRange}/>
+                <TimeSlider
+                    onRangeChanged={handleDistanceRangeChanged_4001}
+                    initialRange={[0, 0]}
+                    locationChartType={LocationChartType.TIME_GAP_DATA}
+                />
+            </div>
+            <div className="view-container">
+                <h1>Robot 4002 distance to persons</h1>
+                <LineChart range={robot4002DistanceRange}/>
+                <TimeSlider
+                    onRangeChanged={handleDistanceRangeChanged_4002}
+                    initialRange={[0, 0]}
+                    locationChartType={LocationChartType.TIME_GAP_DATA}
+                />
+            </div>
+            <div className="view-container">
+                <h1>Robot White distance to persons</h1>
+                <LineChart range={robotWhiteDistanceRange}/>
+                <TimeSlider
+                    onRangeChanged={handleDistanceRangeChanged_White}
                     initialRange={[0, 0]}
                     locationChartType={LocationChartType.TIME_GAP_DATA}
                 />

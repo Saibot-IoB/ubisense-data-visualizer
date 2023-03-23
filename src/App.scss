@@ -17,8 +17,17 @@
         text-align: center;
     }
 }
+.view-container-half {
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    h1 {
+        text-align: center;
+    }
+}
 
-#chart-container {
+#chart-container-bg {
     width: 1050px;
     height: 530px;
     /* aspect-ratio: 2.09; */
@@ -27,6 +36,11 @@
     background-repeat: no-repeat;
     background-size: 1050px 471px;
     background-position: 27px 31px;
+}
+#chart-container {
+    width: 90%;
+    height: 500px;
+    margin: 2vh auto;
 }
 
 .slider-container {

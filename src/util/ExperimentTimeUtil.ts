@@ -43,3 +43,4 @@ export const getExperimentDuration = (chart: LocationChartType): { start: number
 
     return { start: 0, end: 0 };
 };
+

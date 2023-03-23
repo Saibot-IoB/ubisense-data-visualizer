@@ -34,9 +34,15 @@ export type TableDataRow = {
   propertyValue: string | number
 }[];
 
-export type LineDatasetType = {
+export type LineDatesetType = {
   label: string,
+  hidden?:boolean,
   data: number[],
   borderColor: string,
   backgroundColor: string
 }[];
+
+export type LineDataType = {
+  labels: string[],
+  datasets: LineDatesetType
+};

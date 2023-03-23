@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { LineDatasetType } from '../common/types/Simple';
-import { defaultLineChartConfig } from '../common/config/ChartConfigs';
+import {Line} from 'react-chartjs-2';
+import {defaultLineChartConfig} from '../common/config/ChartConfigs';
+import {LineDataType} from "../common/types/Simple";
 
 ChartJS.register(
   CategoryScale,
@@ -27,53 +27,105 @@ interface LineChartProps {
   range: [number, number]
 }
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: [1, 2, 3, 4, 5, 6, 7, 66, 4, 6, 2, 1, 2],
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: 'Dataset 2',
-      data: [1, 2, 3, 4, 5, 6, 7, 66, 4, 6, 2, 1, 2],
-      borderColor: 'rgb(53, 162, 235)',
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-};
-
 const LineChart = (props: LineChartProps) => {
   const { range } = props;
-  const [data, setdata] = useState<LineDatasetType>([]);
+  const [data, setdata] = useState<LineDataType | [] >([]);
 
+  //  TOOOOOOOOO BE REPLACE
+
+  const start = range[0];
+  const end = range[1];
+  const diff = Math.abs(start-end);
+  const timeStampLabelGenerator = (startTime: number, endTime: number) => {
+    const labels: string[] = [];
+
+    for (let i = startTime; i <= endTime; i += 20) {
+      const hours = Math.floor(i / 3600);
+      const minutes = Math.floor((i - (hours * 3600)) / 60);
+      const seconds = i % 60;
+
+      const hoursStr = hours < 10 ? `0${hours}` : `${hours}`;
+      const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+      const secondsStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
+
+      let label = `${minutesStr}:${secondsStr}`;
+      if (hours > 0) {
+        label = `${hoursStr}:${label}`;
+      }
+
+      labels.push(label);
+    }
+    return labels;
+  }
+  const labels = timeStampLabelGenerator(start,end);
+
+  const GenerateRandomNumberArr = (duration:number) => {
+    const numbers = [];
+
+    for (let i = 0; i < (duration/20); i++) {
+      const randomNum = Math.floor(Math.random() * 80) + 1;
+      numbers.push(randomNum);
+    }
+    return numbers;
+  }
+
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        label: 'Person 1',
+        data: GenerateRandomNumberArr(diff),
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      {
+        label: 'Person 2',
+        hidden: true,
+        data: GenerateRandomNumberArr(diff),
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      },
+      {
+        label: 'Person 3',
+        hidden: true,
+        data: GenerateRandomNumberArr(diff),
+        borderColor: 'rgb(238, 115, 4)',
+        backgroundColor: 'rgba(238, 115, 4, 0.5)',
+      },
+      {
+        label: 'Person 4',
+        hidden: true,
+        data: GenerateRandomNumberArr(diff),
+        borderColor: 'rgb(40, 175, 123)',
+        backgroundColor: 'rgba(40, 175, 123, 0.5)',
+      },
+      {
+        label: 'Person 5',
+        hidden: true,
+        data: GenerateRandomNumberArr(diff),
+        borderColor: 'rgb(69, 53, 181)',
+        backgroundColor: 'rgba(69, 53, 181, 0.5)',
+      },
+    ],
+  };
+
+  //  TOOOOOOOOO BE REPLACE STOP
+  
   useEffect(() => {
-    const start = async () => {
-      // Get the data to plot
+    // const start = async () => {
+      setdata(chartData);
+    // };
 
-      // const ubiData = await fetch("/experiment1.txt");
-      // UbisenseDataParserService.parseData(await ubiData.text(), true);
-    };
-
-    start();
+    // start();
   }, []);
 
   useEffect(() => {
-    // Update data when range changes
-
-    // setdata(
-
-    // );
-
+    setdata(chartData);
   }, [range]);
 
   return (
     <div id="chart-container">
-      <Line width={"1000px"} options={defaultLineChartConfig} data={{ datasets: data }} />
+      <Line width={"1000px"} options={defaultLineChartConfig} data={chartData} />
     </div>
   );
 }

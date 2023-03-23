@@ -56,7 +56,7 @@ const LocationChart = (props: LocationChartProps) => {
     }, [range, locationChartType]);
 
     return (
-        <div id="chart-container">
+        <div id="chart-container-bg">
             <Bubble width={"1000px"} options={DefaultBubbleChartConfig} data={{ datasets: data }} />
         </div>
     );
