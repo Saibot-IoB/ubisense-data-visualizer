@@ -12,6 +12,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import { defaultLineChartConfig } from '../common/config/ChartConfigs';
 import { LineDataType } from "../common/types/Simple";
+import {calculateRobotHumanDistances} from "../util/DistanceCalculator";
 
 ChartJS.register(
   CategoryScale,
@@ -112,11 +113,14 @@ const LineChart = (props: LineChartProps) => {
   //  TOOOOOOOOO BE REPLACE STOP
 
   useEffect(() => {
-    // const start = async () => {
+    const start = async () => {
+      
+      console.log(calculateRobotHumanDistances(locationData , 20));
+      
     setdata(chartData);
-    // };
+     };
 
-    // start();
+    start();
   }, []);
 
   useEffect(() => {

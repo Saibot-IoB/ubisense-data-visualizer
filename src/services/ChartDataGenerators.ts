@@ -9,8 +9,6 @@ export const generateBubbleChartDataset = (locationData: Map<string, LocationDat
     const datasets: BubbleDatasetType = [];
     const experimentStart = getExperimentInterval(chart).start;
     
-    console.log(calculateRobotHumanDistances(locationData, 20));
-
     locationData.forEach((value, key) => {
         const currentArr: BubbleChartDataType[] = [];
 
