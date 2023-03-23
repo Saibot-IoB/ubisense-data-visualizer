@@ -34,7 +34,7 @@ export type TableDataRow = {
   propertyValue: string | number
 }[];
 
-export type LineDatesetType = {
+export type LineDatasetType = {
   label: string,
   hidden?:boolean,
   data: number[],
@@ -44,5 +44,5 @@ export type LineDatesetType = {
 
 export type LineDataType = {
   labels: string[],
-  datasets: LineDatesetType
+  datasets: LineDatasetType
 };

@@ -33,7 +33,7 @@ export const DefaultBubbleChartConfig = {
 };
 
 export const defaultLineChartConfig = {
-  spanGaps:false,
+  spanGaps: true,
   responsive: true,
   maintainAspectRatio: false,
   plugins: {

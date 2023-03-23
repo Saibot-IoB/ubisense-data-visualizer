@@ -23,7 +23,7 @@ export const EntityToTagMap: Record<string, string> = {
 };
 
 export const EntityColors: Record<string, string> = {
-    "00:11:CE:00:00:00:CB:34": "rgba(156, 39, 17, 0.5)",
+    "00:11:CE:00:00:00:CB:34": "rgba(245, 40, 145, 0.5)",
     "00:11:CE:00:00:00:CB:23": "rgba(156, 39, 17, 0.5)",
     "00:11:CE:00:00:00:CB:2B": "rgba(3, 169, 24, 0.5)",
     "00:11:CE:00:00:00:CB:29": "rgba(0, 150, 136, 0.5)",

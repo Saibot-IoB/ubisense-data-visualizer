@@ -8,6 +8,8 @@ import { LocationChartType } from "./common/enums/LocationCharts";
 import { UbisenseDataAnalyzer } from "./services/UbisenseDataAnalyzer";
 import TimeSlider from "./components/TimeSlider/TimeSlider";
 import LineChart from "./components/LineChart";
+import {UbisenseDataParser} from './services/UbisenseDataParser';
+import {calculateRobotHumanDistances} from './util/DistanceCalculator';
 
 function App() {
     const [locationRange, setLocationRange] = useState<[number, number]>([0, 0]);
@@ -16,6 +18,7 @@ function App() {
     const [robot4002DistanceRange, setrobot4002DistanceRange] = useState<[number, number]>([0, 0]);
     const [robotWhiteDistanceRange, setrobotWhiteDistanceRange] = useState<[number, number]>([0, 0]);
     const [robotLocationRange, setRobotLocationRange] = useState<[number, number]>([0, 0]);
+    const [distanceData, setDistanceData] = useState<Map<string, [string, [number, (number | null)]][]>| null>(null);
 
     const handleLocationRangeChanged = (value: [number, number]) => {
         setLocationRange(value);
@@ -45,7 +48,18 @@ function App() {
      * data is fetched using exponential retries.
      */
     useEffect(() => {
-        const filterNGaps = 10;
+        const tryGetData = () => {
+            if (UbisenseDataParser.GetParsedData().size === 0) {
+                setTimeout(tryGetData, 1000);
+            } else {
+                const locationData = UbisenseDataParser.GetParsedData();
+                setDistanceData(calculateRobotHumanDistances(locationData , 20));
+            }
+        }
+
+        tryGetData();
+        
+        /*const filterNGaps = 10;
         let retryCount = 0;
 
         const attemptFetchData = (): void => {
@@ -72,9 +86,9 @@ function App() {
             } else {
                 alert("Failed to fetch data after multiple retries.");
             }
-        };
+        };*/
 
-        attemptFetchData();
+        //attemptFetchData();
     }, []);
 
     return (
@@ -107,31 +121,31 @@ function App() {
                 />
             </div>
             <div className="view-container">
-                <h1>Robot 4001 distance to persons</h1>
-                <LineChart range={robot4001DistanceRange}/>
-                <TimeSlider
+                <h1>Robot 4701 distance to persons</h1>
+                <LineChart range={robot4001DistanceRange} distanceData={distanceData} robotId={"4701"} />
+                {/*<TimeSlider
                     onRangeChanged={handleDistanceRangeChanged_4001}
                     initialRange={[0, 0]}
                     locationChartType={LocationChartType.TIME_GAP_DATA}
-                />
+                />*/}
             </div>
             <div className="view-container">
-                <h1>Robot 4002 distance to persons</h1>
-                <LineChart range={robot4002DistanceRange}/>
-                <TimeSlider
+                <h1>Robot 4702 distance to persons</h1>
+                <LineChart range={robot4001DistanceRange} distanceData={distanceData} robotId={"4702"} />
+                {/*<TimeSlider
                     onRangeChanged={handleDistanceRangeChanged_4002}
                     initialRange={[0, 0]}
                     locationChartType={LocationChartType.TIME_GAP_DATA}
-                />
+                />*/}
             </div>
             <div className="view-container">
                 <h1>Robot White distance to persons</h1>
-                <LineChart range={robotWhiteDistanceRange}/>
-                <TimeSlider
+                <LineChart range={robot4001DistanceRange} distanceData={distanceData} robotId={"White"} />
+                {/*<TimeSlider
                     onRangeChanged={handleDistanceRangeChanged_White}
                     initialRange={[0, 0]}
                     locationChartType={LocationChartType.TIME_GAP_DATA}
-                />
+                />*/}
             </div>
         </div>
     );
