@@ -32,10 +32,18 @@ export const DefaultBubbleChartConfig = {
   maintainAspectRatio: false
 };
 
-export const defaultLineChartConfig = {
+export const DefaultLineChartConfig = {
   spanGaps: true,
   responsive: true,
   maintainAspectRatio: false,
+  animation: {
+    duration: 0,
+  },
+  elements: {
+    line: {
+      tension: 0
+    }
+  },
   plugins: {
     legend: {
       position: 'top' as const,

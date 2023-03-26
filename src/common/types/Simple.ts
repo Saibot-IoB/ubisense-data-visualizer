@@ -37,12 +37,27 @@ export type TableDataRow = {
 export type LineDatasetType = {
   label: string,
   hidden?:boolean,
-  data: number[],
+  data: (number | null)[],
   borderColor: string,
   backgroundColor: string
-}[];
+};
 
 export type LineDataType = {
   labels: string[],
   datasets: LineDatasetType
+};
+
+export type TimestampDistance = {
+  time: string;
+  distance: number | null;
+};
+
+export type EntityDistance = {
+  entityId: string;
+  distances: TimestampDistance[];
+};
+
+export type EntityDistanceResult = {
+  sourceEntity: string;
+  entityDistances: EntityDistance[];
 };

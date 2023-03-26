@@ -1,102 +1,57 @@
-import {LocationData} from '../common/types/Simple';
-import {TimeConverter} from './Converters/TimeConverter';
-import {getExperimentInterval} from './ExperimentTimeUtil';
-import {LocationChartType} from '../common/enums/LocationCharts';
+import {EntityDistance, EntityDistanceResult, LocationData, TimestampDistance} from '../common/types/Simple';
 
-const allRobots: [string, string, string, string] = [
-    "4703",
-    "4702",
-    "4701",
-    "White"
-];
+const euclideanDistance = (x1: number, y1: number, x2: number, y2: number): number => {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+}
 
-const FunctioningRobots: [string, string, string] = [
-    "4702",
-    "4701",
-    "White"
-];
+export const findEntityDistances = (
+    entityId: string,
+    data: Map<string, LocationData[]>
+): EntityDistanceResult => {
+    const sourceData = data.get(entityId);
 
-export const calculateRobotHumanDistances = (entityData: Map<string, LocationData[]>, interval: number): Map<string, [string, [number, number | null]][]> => {
-    const result = new Map<string, [string, [number, number | null]][]>();
-    const allRobotsSet = new Set(allRobots);
-    const startTime = getExperimentInterval(LocationChartType.UBISENSE_DATA).start;
+    if (!sourceData) {
+        throw new Error(`Entity ${entityId} not found in the dataset`);
+    }
 
-    for (const entityId of FunctioningRobots) {
-        const locationDataList = entityData.get(entityId);
-        if (!locationDataList) {
-            continue;
+    const entityDistances: EntityDistance[] = [];
+
+    data.forEach((targetData, targetId) => {
+        if (targetId === entityId || !targetId.startsWith("Participant")) {
+            return;
         }
 
-        const participantEntities = Array.from(entityData.keys()).filter((id) => !allRobotsSet.has(id));
+        const distances: TimestampDistance[] = sourceData.map((sourcePoint) => {
+            const targetPoint = targetData.find((point) => point.time === sourcePoint.time);
 
-        const distances: [string, [number, number | null]][] = [];
-
-        for (let i = 0; i < 3840; i += interval) {
-            const locClosestTime = getClosestTimeStamp(
-                TimeConverter.convertLocationDataTimestampsToSeconds(locationDataList),
-                i
-            );
-            
-            const locData = locationDataList.find((data) =>
-                (TimeConverter.convertTimestampToSeconds(data.time) - startTime) === locClosestTime);
-
-            for (const otherEntityId of participantEntities) {
-                const otherLocationDataList = entityData.get(otherEntityId);
-                if (!otherLocationDataList) {
-                    continue;
-                }
-                
-                const otherLocClosestTime = getClosestTimeStamp(
-                    TimeConverter.convertLocationDataTimestampsToSeconds(otherLocationDataList),
-                    i
-                );
-                
-                let otherLocData: LocationData | undefined = otherLocationDataList.find((data) =>
-                    TimeConverter.convertTimestampToSeconds(data.time) - startTime === otherLocClosestTime);
-                
-                let dist: number | null = null;
-
-                if (locData && otherLocData) {
-                    dist = calculateEuclideanDistance(
-                        locData,
-                        otherLocData
-                    );
-                }
-                
-                if (dist === null) {
-                    distances.push([otherEntityId, [i, null]]);
-                } else {
-                    distances.push([otherEntityId, [i, dist]]);
-                }
+            if (!targetPoint) {
+                return {
+                    time: sourcePoint.time,
+                    distance: null,
+                };
             }
-        }
 
-        result.set(entityId, distances);
-    }
+            const distance = euclideanDistance(
+                parseFloat(sourcePoint.x),
+                parseFloat(sourcePoint.y),
+                parseFloat(targetPoint.x),
+                parseFloat(targetPoint.y)
+            );
 
-    return result;
-}
+            return {
+                time: sourcePoint.time,
+                distance,
+            };
+        });
 
-const getClosestTimeStamp = (timestamps: number[], target: number): number => {
-    const startTime = getExperimentInterval(LocationChartType.UBISENSE_DATA).start;
-   
-    for (let i = 0; i < timestamps.length; i++) {
-        const ts = (timestamps[i] - startTime);
-        
-        if (ts > target) {
-            if (ts > target + 3 || ts < target - 3) break;
-            return timestamps[i - 1] - startTime;
-        }
-    }
-    
-    return -1;
-}
-    
-const calculateEuclideanDistance = (a: LocationData, b: LocationData): number => {
-    const ax = parseFloat(a.x);
-    const ay = parseFloat(a.y);
-    const bx = parseFloat(b.x);
-    const by = parseFloat(b.y);
+        entityDistances.push({
+            entityId: targetId,
+            distances,
+        });
+    });
 
-    return Math.sqrt(Math.pow((ax - bx), 2) + Math.pow((ay - by), 2));
+    return {
+        sourceEntity: entityId,
+        entityDistances,
+    };
 }

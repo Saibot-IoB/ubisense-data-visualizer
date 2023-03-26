@@ -3,7 +3,6 @@ import { LocationChartType } from "../common/enums/LocationCharts";
 import { BubbleChartDataType, BubbleDatasetType, LocationData } from "../common/types/Simple";
 import { TimeConverter } from "../util/Converters/TimeConverter";
 import { getExperimentInterval } from "../util/ExperimentTimeUtil";
-import {calculateRobotHumanDistances} from '../util/DistanceCalculator';
 
 export const generateBubbleChartDataset = (locationData: Map<string, LocationData[]>, rangeStart: number, rangeEnd: number, chart: LocationChartType, bubbleRadius?: number) =>  {
     const datasets: BubbleDatasetType = [];

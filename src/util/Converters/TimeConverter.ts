@@ -23,4 +23,21 @@ export class TimeConverter {
         
         return returnArray;
     }
+
+    public static timeStrToSeconds = (time: string): number => {
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        return hours * 3600 + minutes * 60 + seconds;
+    };
+
+    public static secondsToTimeStr = (seconds: number): string => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        const hoursStr = hours < 10 ? `0${hours}` : `${hours}`;
+        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const secondsStr = secs < 10 ? `0${secs}` : `${secs}`;
+
+        return `${hoursStr}:${minutesStr}:${secondsStr}`;
+    };
 }
