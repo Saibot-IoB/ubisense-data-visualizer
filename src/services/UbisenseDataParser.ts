@@ -1,6 +1,6 @@
 import { TagToEntityMap } from "../common/constants/EntityConstants";
 import { LocationChartType } from "../common/enums/LocationCharts";
-import { BubbleDatasetType, LocationData } from "../common/types/Simple";
+import {BubbleDatasetType, LocationData, LocationDataAll} from '../common/types/Simple';
 import { generateBubbleChartDataset } from "./ChartDataGenerators";
 
 export class UbisenseDataParser {
@@ -32,6 +32,35 @@ export class UbisenseDataParser {
                 }
             }
         });
+    }
+
+    public static async getAllData() {
+        const data = await (await fetch("/experiment1.txt")).text();
+        const returnData: LocationDataAll[] = [];
+
+        const lines: string[] = data.split("\n");
+        lines.shift();
+
+        lines.forEach((line: string) => {
+            line = line.replace(/\0/g, "");
+
+            const time: string = line.substring(7, 15);
+            const tag: string = TagToEntityMap[line.substring(21, 44)];
+            const validField: string = line.substring(53, 55);
+            const y: string = line.substring(63, 68).trim();
+            const x: string = line.substring(71, 76).trim();
+            const valid: boolean = validField === "ok";
+            
+            returnData.push({
+                time,
+                tag,
+                x,
+                y,
+                valid    
+            });
+        });
+        
+        return returnData;
     }
 
     public static GetParsedData() {

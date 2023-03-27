@@ -61,3 +61,11 @@ export type EntityDistanceResult = {
   sourceEntity: string;
   entityDistances: EntityDistance[];
 };
+
+export type LocationDataAll = {
+  time: string;
+  tag: string;
+  x: string;
+  y: string;
+  valid: boolean;
+};
