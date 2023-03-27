@@ -9,7 +9,7 @@ import LineChart from "./components/LineChart";
 import {UbisenseDataParser} from './services/UbisenseDataParser';
 import {findEntityDistances} from './util/DistanceCalculator';
 import {EntityDistanceResult} from './common/types/Simple';
-import Heatmap from './components/Heatmap';
+import Heatmap from './components/Heatmap/Heatmap';
 
 function App() {
     const [locationRange, setLocationRange] = useState<[number, number]>([0, 0]);
@@ -121,7 +121,7 @@ function App() {
                 />
             </div>
             <div className="view-container heatmap-container">
-                <h1>Valid vs Invalid data Heatmap</h1>
+                <h1>Ubisense - Data Validity Heatmap</h1>
                 <Heatmap />
             </div>
         </div>

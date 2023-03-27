@@ -1,9 +1,11 @@
-﻿import React, {useEffect, useRef, useState} from 'react';
+﻿import 'chartjs-chart-matrix';
+
+import React, {useEffect, useRef, useState} from 'react';
 import {CategoryScale, Chart, LinearScale, Title, Tooltip } from 'chart.js';
-import 'chartjs-chart-matrix';
-import {LocationDataAll} from '../common/types/Simple';
-import {UbisenseDataParser} from '../services/UbisenseDataParser';
+import {LocationDataAll} from '../../common/types/Simple';
+import {UbisenseDataParser} from '../../services/UbisenseDataParser';
 import { MatrixElement, MatrixController } from 'chartjs-chart-matrix';
+import HeatmapLegend from './HeatmapLegend';
 
 Chart.register(Tooltip, CategoryScale, LinearScale, Title, MatrixElement, MatrixController);
 
@@ -16,10 +18,7 @@ interface HeatmapData {
     };
 }
 
-interface HeatmapProps {
-}
-
-const Heatmap = (props: HeatmapProps) => {
+const Heatmap = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [data, setData] = useState<LocationDataAll[]>([]);
     
@@ -33,6 +32,8 @@ const Heatmap = (props: HeatmapProps) => {
     }, []);
 
     useEffect(() => {
+        let chartInstance: Chart | null = null;
+        
         if (canvasRef.current) {
             const ctx = canvasRef.current.getContext('2d');
             if (ctx == null || data.length == 0) return;
@@ -48,22 +49,29 @@ const Heatmap = (props: HeatmapProps) => {
 
                 return acc;
             }, {});
-
-            const heatmapArray = Object.values(heatmapData).map((loc: any) => ({
-                x: loc.x,
-                y: loc.y,
-                count: loc.count,
-                validCount: loc.validCount,
-                value: loc.validCount / loc.count,
-                backgroundColor:
-                    loc.count === 0
-                        ? 'blue'
-                        : loc.validCount / loc.count > 0.5
-                            ? 'green'
-                            : 'red',
-            }));
             
-            new Chart(ctx, {
+
+            const heatmapArray = Object.values(heatmapData).map((loc: any) => {
+                let backgroundColor: string = "";
+                let validRation: number = loc.validCount / loc.count;
+                
+                if (validRation <= 0.1)       { backgroundColor = "darkred" }
+                else if (validRation <= 0.25) { backgroundColor = "red" }
+                else if (validRation <= 0.5)  { backgroundColor = "orange" }
+                else if (validRation <= 0.75) { backgroundColor = "lightgreen" }
+                else                          { backgroundColor = "green" }
+                
+                return ({
+                    x: loc.x,
+                    y: loc.y,
+                    count: loc.count,
+                    validCount: loc.validCount,
+                    value: loc.validCount / loc.count,
+                    backgroundColor: backgroundColor
+                })
+            });
+            
+            chartInstance = new Chart(ctx, {
                 type: 'matrix',
                 data: {
                     datasets: [
@@ -75,6 +83,9 @@ const Heatmap = (props: HeatmapProps) => {
                     ],
                 },
                 options: {
+                    animation: {
+                        duration: 0,
+                    },
                     scales: {
                         x: {
                             beginAtZero: true,
@@ -91,7 +102,9 @@ const Heatmap = (props: HeatmapProps) => {
                         },
                     },
                     plugins: {
-                        legend: { display: false },
+                        legend: {
+                            display: false
+                        },
                         tooltip: {
                             callbacks: {
                                 label: (context) => {
@@ -104,9 +117,29 @@ const Heatmap = (props: HeatmapProps) => {
                 },
             });
         }
-    }, [data]);
 
-    return <canvas ref={canvasRef} id={"HeatMap"} />;
+        return () => {
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+        };
+    }, [data]);
+    
+
+    return (
+        <div id="chart-container-bg" className={"heatmap-bg"}>
+            <HeatmapLegend
+                items={[
+                    { color: 'darkred', text: '0-10% valid'},
+                    { color: 'red', text: '11-25% valid'},
+                    { color: 'orange', text: '26-50% valid' },
+                    { color: 'lightgreen', text: '51-75% valid' },
+                    { color: 'green', text: '76-100% valid' },
+                ]}
+            />
+           <canvas ref={canvasRef} id={"HeatMap"} />
+        </div>
+    );
 };
 
 export default Heatmap;
